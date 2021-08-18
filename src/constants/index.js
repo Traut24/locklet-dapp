@@ -9,7 +9,7 @@ export const AVERAGE_BLOCK_TIME_IN_SECS = 13;
 
 export const TOKEN_VAULT = { 
   [EthChainId.MAINNET]: '',
-  [EthChainId.ROPSTEN]: '0xCeEcFb1F16aB7EBc166E397083eDFCEF5DC6C53d',
+  [EthChainId.ROPSTEN]: '0xE2C11E89bE790B252cEeF3a3D69ca5498E47e713',
   [BscChainId.MAINNET]: '',
   [BscChainId.TESTNET]: '',
 }

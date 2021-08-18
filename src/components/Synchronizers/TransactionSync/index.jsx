@@ -61,7 +61,6 @@ export default function TransactionSync() {
               });
 
               const tx = transactions[hash];
-              console.log('Status', tx);
               if (tx?.status === 1 || tx?.status === undefined) toast.success('Your transaction was successful', { id: hash });
               else toast.error('An error occurred during your transaction', { id: hash });
             } else {
