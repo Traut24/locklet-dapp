@@ -17,6 +17,7 @@ export const illustrations = {
     color: 'gray.500',
   },
 };
+
 export const data = [
   {
     id: 'TVL',

@@ -6,7 +6,6 @@ import capitalize from 'capitalize-sentence'
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
-import { ExternalLink as LinkIcon } from 'react-feather';
 import toast from 'react-hot-toast';
 import { FaExclamationTriangle, FaPlusCircle } from 'react-icons/fa';
 import DatePicker from 'src/components/DatePicker';

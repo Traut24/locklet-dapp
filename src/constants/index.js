@@ -90,3 +90,5 @@ export const SUPPORTED_WALLETS = {
 };
 
 export const NetworkContextName = 'NETWORK';
+
+export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 5;
