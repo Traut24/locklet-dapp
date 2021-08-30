@@ -108,7 +108,7 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default function AccountDetails({ toggleWalletModal, openOptions }) {
+export default function AccountDetails({ openOptions }) {
   const { chainId, account, connector } = useActiveWeb3React();
 
   function formatConnectorName() {

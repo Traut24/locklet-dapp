@@ -1,4 +1,4 @@
-import { Box, Circle, Flex, Heading, HStack, Image, useColorModeValue as mode, Text } from '@chakra-ui/react';
+import { Box, Circle, Flex, Heading, HStack, Image, useColorModeValue as mode, Skeleton, Text } from '@chakra-ui/react';
 
 import { Indicator } from './Indicator';
 
@@ -12,6 +12,8 @@ function format(value) {
 export const StatCard = (props) => {
   const { data, accentColor, icon, image } = props;
   const { label, currency, value, change } = data;
+
+  const direction = change?.direction;
   const isNegative = change?.percent < 0;
 
   return (
@@ -21,25 +23,29 @@ export const StatCard = (props) => {
           {icon && <Box as={icon} />}
           {image && <Image src={image} />}
         </Circle>
-        <Text fontWeight="medium" color={mode('gray.500', 'gray.400')}>
+        <Text fontWeight="medium" color="gray.500">
           {label}
         </Text>
       </HStack>
 
-      <Heading as="h4" size="lg" my="3" fontWeight="extrabold">
-        {currency}
-        {format(value)}
+      <Heading as="h4" size="lg" my="3" fontWeight="semibold">
+        <Skeleton rounded="md" width={!value && '100px'} isLoaded={value}>
+          {currency}
+          {format(value)}
+        </Skeleton>
       </Heading>
+
       {change && (
         <Flex justify="space-between" align="center" fontWeight="medium" fontSize="sm">
-          <HStack spacing="0" color={mode('gray.500', 'gray.400')}>
-            <Indicator type={isNegative ? 'down' : 'up'} />
-            <Text>
-              {currency}
-              {format(change.value)} ({isNegative ? '' : '+'}
-              {change.percent}%)
-            </Text>
-          </HStack>
+          <Skeleton rounded="md" width={!change?.percent && '60px'} isLoaded={change?.percent}>
+            <HStack spacing="0" color="gray.500">
+              <Indicator type={direction ?? (isNegative ? 'down' : 'up')} />
+              <Text>
+                {/* direction == 'down' || isNegative ? '-' : '+' */}
+                {change.percent}%
+              </Text>
+            </HStack>
+          </Skeleton>
         </Flex>
       )}
     </Box>

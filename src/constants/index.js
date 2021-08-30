@@ -9,7 +9,7 @@ export const AVERAGE_BLOCK_TIME_IN_SECS = 13;
 
 export const TOKEN_VAULT = { 
   [EthChainId.MAINNET]: '',
-  [EthChainId.ROPSTEN]: '0xE2C11E89bE790B252cEeF3a3D69ca5498E47e713',
+  [EthChainId.ROPSTEN]: '0x018a42A8794198c99d8d32bBAA5c575430f7D985',
   [BscChainId.MAINNET]: '',
   [BscChainId.TESTNET]: '',
 }
@@ -91,4 +91,15 @@ export const SUPPORTED_WALLETS = {
 
 export const NetworkContextName = 'NETWORK';
 
+export const TRUST_WALLET_NETWORK_ALIAS = {
+  [EthChainId.MAINNET | EthChainId.ROPSTEN]: 'ethereum',
+  [BscChainId.MAINNET]: 'binance',
+};
+
+export const getTrustWalletTokenListUrl = (blockchain) => {
+  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchain}/tokenlist.json`;
+};
+
 export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 5;
+export const ALL_TOKEN_LOCKS_PAGE_SIZE = 10;
+export const YOUR_TOKEN_LOCKS_PAGE_SIZE = 10;

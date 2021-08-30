@@ -10,6 +10,7 @@ import { fortmatic, injected, portis } from 'src/connectors';
 import { OVERLAY_READY } from 'src/connectors/Fortmatic';
 import { SUPPORTED_WALLETS } from 'src/constants';
 import usePrevious from 'src/hooks/usePrevious';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import { CLOSE_MODAL, OPEN_MODAL } from 'src/store';
 import styled from 'styled-components';
 
@@ -36,8 +37,6 @@ const WALLET_VIEWS = {
 };
 
 const WalletManager = () => {
-  const dispatch = useDispatch();
-
   const { active, account, connector, activate, error } = useWeb3React();
 
   const networkMissmatch = useSelector((state) => state.app.networkMissmatch);
@@ -52,10 +51,7 @@ const WalletManager = () => {
 
   const walletModalOpen = useSelector((state) => state.modals.walletManager.show);
 
-  const toggleWalletModal = () => {
-    if (walletModalOpen) dispatch({ type: CLOSE_MODAL, name: 'walletManager' });
-    else dispatch({ type: OPEN_MODAL, name: 'walletManager' });
-  };
+  const toggleWalletModal = useToggleModal('walletManager');
 
   // close on connection, when logged out before
   useEffect(() => {

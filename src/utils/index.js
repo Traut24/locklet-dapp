@@ -99,3 +99,11 @@ export function escapeRegExp(string) {
 export function daysBetween(a, b) {
   return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
 }
+
+export function formatDate(date) {
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+}

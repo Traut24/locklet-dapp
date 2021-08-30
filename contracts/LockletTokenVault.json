@@ -487,14 +487,14 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
+          "internalType": "int256",
           "name": "page",
-          "type": "uint256"
+          "type": "int256"
         },
         {
-          "internalType": "uint256",
+          "internalType": "int256",
           "name": "pageSize",
-          "type": "uint256"
+          "type": "int256"
         }
       ],
       "name": "getLocks",
@@ -502,7 +502,17 @@
         {
           "components": [
             {
+              "internalType": "uint256",
+              "name": "index",
+              "type": "uint256"
+            },
+            {
               "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "creationTime",
+                  "type": "uint256"
+                },
                 {
                   "internalType": "address",
                   "name": "tokenAddress",
@@ -526,6 +536,11 @@
                 {
                   "internalType": "bool",
                   "name": "isRevocable",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isRevoked",
                   "type": "bool"
                 },
                 {
@@ -586,36 +601,6 @@
           "internalType": "address",
           "name": "initiatorAddress",
           "type": "address"
-        }
-      ],
-      "name": "getLocksLengthByInitiator",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "initiatorAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "page",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "pageSize",
-          "type": "uint256"
         }
       ],
       "name": "getLocksByInitiator",
@@ -623,7 +608,17 @@
         {
           "components": [
             {
+              "internalType": "uint256",
+              "name": "index",
+              "type": "uint256"
+            },
+            {
               "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "creationTime",
+                  "type": "uint256"
+                },
                 {
                   "internalType": "address",
                   "name": "tokenAddress",
@@ -647,6 +642,11 @@
                 {
                   "internalType": "bool",
                   "name": "isRevocable",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isRevoked",
                   "type": "bool"
                 },
                 {
@@ -707,36 +707,6 @@
           "internalType": "address",
           "name": "recipientAddress",
           "type": "address"
-        }
-      ],
-      "name": "getLocksLengthByRecipient",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "recipientAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "page",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "pageSize",
-          "type": "uint256"
         }
       ],
       "name": "getLocksByRecipient",
@@ -744,7 +714,17 @@
         {
           "components": [
             {
+              "internalType": "uint256",
+              "name": "index",
+              "type": "uint256"
+            },
+            {
               "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "creationTime",
+                  "type": "uint256"
+                },
                 {
                   "internalType": "address",
                   "name": "tokenAddress",
@@ -768,6 +748,11 @@
                 {
                   "internalType": "bool",
                   "name": "isRevocable",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isRevoked",
                   "type": "bool"
                 },
                 {
@@ -816,6 +801,56 @@
           "internalType": "struct LockletTokenVault.LockWithRecipients[]",
           "name": "",
           "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getRefundAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "lockIndex",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipientAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getClaimByLockAndRecipient",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",

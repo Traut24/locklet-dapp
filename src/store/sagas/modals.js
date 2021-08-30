@@ -2,12 +2,13 @@ import { put, takeLatest } from 'redux-saga/effects';
 import { CLOSE_MODAL, OPEN_MODAL } from '../actions';
 import { SET_MODAL_DATA } from '../mutations';
 
-function* openModal({ name }) {
+function* openModal({ name, type, ...props }) {
   yield put({
     type: SET_MODAL_DATA,
     name,
     data: {
-      isVisible: true,
+      show: true,
+      ...props
     },
   });
 }
@@ -17,7 +18,7 @@ function* closeModal({ name }) {
     type: SET_MODAL_DATA,
     name,
     data: {
-      isVisible: false,
+      show: false,
     },
   });
 }

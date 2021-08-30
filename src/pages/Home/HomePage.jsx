@@ -28,7 +28,7 @@ const HomePage = () => {
 
       <Box maxW={{ base: 'xl', md: '7xl' }} mx="auto" px={{ base: '6', md: '8' }}>
         <Box overflowX="auto">
-          <Heading size="lg" mb="4">
+          <Heading fontWeight="semibold" size="lg" mb="4">
             Latest Token Locks
           </Heading>
 

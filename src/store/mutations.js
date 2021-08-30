@@ -7,3 +7,5 @@ export const SET_MODAL_DATA = 'setModalData';
 export const ADD_TRANSACTION = 'addTransaction';
 export const CHECKED_TRANSACTION = 'checkedTransaction';
 export const FINALIZE_TRANSACTION = 'finalizeTransaction';
+
+export const APPEND_METADATA = 'appendMetadata';

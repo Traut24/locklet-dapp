@@ -1,9 +1,9 @@
-import { SET_BLOCK_NUMBER, SET_NETWORK, SET_NETWORK_MISSMATCH } from '../mutations';
+import { APPEND_METADATA, SET_BLOCK_NUMBER, SET_NETWORK, SET_NETWORK_MISSMATCH } from '../mutations';
 
 const initialState = {
   network: 'eth',
   networkMissmatch: false,
-  blockNumber: {},
+  blockNumber: {}
 };
 
 export default (state = initialState, action) => {

@@ -2,9 +2,11 @@ import { ChakraProvider, Flex, HStack } from '@chakra-ui/react';
 import { Toaster } from 'react-hot-toast';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Logo from 'src/components/Logo';
+import RevokeLock from 'src/components/Modals/Tokens/RevokeLock';
 import WalletManager from 'src/components/Modals/WalletManager';
 import NetworkSelector from 'src/components/NetworkSelector';
 import BlockSync from 'src/components/Synchronizers/BlockSync';
+import MetaDataSync from 'src/components/Synchronizers/MetaDataSync';
 import TransactionSync from 'src/components/Synchronizers/TransactionSync';
 import Web3ReactManager from 'src/components/Web3ReactManager';
 import Web3Status from 'src/components/Web3Status';
@@ -80,6 +82,7 @@ const App = () => {
         <Web3ReactManager>
           <BlockSync />
           <TransactionSync />
+          <MetaDataSync />
 
           <Switch>
             <Route exact path="/" component={HomePage} />
@@ -93,6 +96,7 @@ const App = () => {
         </Web3ReactManager>
 
         <WalletManager />
+        <RevokeLock />
       </Flex>
     </>
   );

@@ -10,7 +10,7 @@ import PortisIcon from 'src/assets/images/providers/portisIcon.png';
 import WalletConnectIcon from 'src/assets/images/providers/walletConnectIcon.svg';
 import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
 import { NetworkContextName } from 'src/constants';
-import { useToggleWalletModal } from 'src/hooks/useToggleWalletModal';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import { CLOSE_MODAL, OPEN_MODAL, SET_NETWORK_MISSMATCH } from 'src/store';
 import { shortenAddress } from 'src/utils';
 import styled from 'styled-components';
@@ -70,7 +70,7 @@ function Web3StatusInner() {
 
   const { chainId, account, connector, error } = useWeb3React();
 
-  const toggleWalletModal = useToggleWalletModal();
+  const toggleWalletModal = useToggleModal('walletManager');
 
   const appNetwork = useSelector((state) => state.app.network);
   const networkMissmatch = useSelector((state) => state.app.networkMissmatch);
@@ -94,21 +94,21 @@ function Web3StatusInner() {
 
   if (error || networkMissmatch) {
     return (
-      <Button colorScheme="red" variant="solid" size="sm" onClick={toggleWalletModal}>
+      <Button colorScheme="red" variant="solid" size="sm" onClick={() => toggleWalletModal()}>
         {error instanceof UnsupportedChainIdError || networkMissmatch ? 'Wrong Network' : 'Error'}
       </Button>
     );
   }
   if (account) {
     return (
-      <Button colorScheme="brand" variant="outline" size="sm" onClick={toggleWalletModal}>
+      <Button colorScheme="brand" variant="outline" size="sm" onClick={() => toggleWalletModal()}>
         {shortenAddress(account)}
         {connector && <StatusIcon connector={connector} />}
       </Button>
     );
   }
   return (
-    <Button colorScheme="brand" variant="outline" size="sm" onClick={toggleWalletModal}>
+    <Button colorScheme="brand" variant="outline" size="sm" onClick={() => toggleWalletModal()}>
       Connect to a wallet
     </Button>
   );

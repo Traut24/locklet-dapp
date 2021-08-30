@@ -7,7 +7,7 @@ import { useEagerConnect, useInactiveListener } from 'src/hooks';
 import Loader from '../Loader';
 
 export default function Web3ReactManager({ children }) {
-  const { active, chainId, account } = useWeb3React();
+  const { active } = useWeb3React();
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName);
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already

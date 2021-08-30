@@ -15,7 +15,7 @@ import { LKT_TOKEN, TOKEN_VAULT } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
 import { useTokenContract, useTokenVaultContract } from 'src/hooks/useContract';
-import { useToggleWalletModal } from 'src/hooks/useToggleWalletModal';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import { daysBetween, isAddress } from 'src/utils';
 
 export default function NewTokenLock() {
@@ -193,7 +193,7 @@ export default function NewTokenLock() {
     refreshLktAllowance();
   }, [chainId]);
 
-  const toggleWalletModal = useToggleWalletModal();
+  const toggleWalletModal = useToggleModal('walletManager');
 
   // token management
   const token = useTokenContract(tokenAddr);
