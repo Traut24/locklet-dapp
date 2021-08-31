@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import copy from 'copy-to-clipboard';
-import { useActiveWeb3React } from '.';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useActiveWeb3React } from '.';
 
 export default function useTokensMetadata() {
   const { chainId } = useActiveWeb3React();
 
-  const metadata = useSelector(state => state.metadata);
+  const metadata = useSelector((state) => state.metadata);
 
   const chainTokenList = useMemo(() => {
     return metadata[`token-list-${chainId}`];

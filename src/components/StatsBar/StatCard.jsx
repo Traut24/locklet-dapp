@@ -1,13 +1,7 @@
 import { Box, Circle, Flex, Heading, HStack, Image, useColorModeValue as mode, Skeleton, Text } from '@chakra-ui/react';
+import { formatUsd } from 'src/utils';
 
 import { Indicator } from './Indicator';
-
-function format(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    currency: 'USD',
-  }).format(value);
-}
 
 export const StatCard = (props) => {
   const { data, accentColor, icon, image } = props;
@@ -31,7 +25,7 @@ export const StatCard = (props) => {
       <Heading as="h4" size="lg" my="3" fontWeight="semibold">
         <Skeleton rounded="md" width={!value && '100px'} isLoaded={value}>
           {currency}
-          {format(value)}
+          {formatUsd(value)}
         </Skeleton>
       </Heading>
 

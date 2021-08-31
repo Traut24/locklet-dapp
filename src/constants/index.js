@@ -7,12 +7,12 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 // Block time here is slightly higher (~1s) than average in order to avoid ongoing proposals past the displayed time
 export const AVERAGE_BLOCK_TIME_IN_SECS = 13;
 
-export const TOKEN_VAULT = { 
+export const TOKEN_VAULT = {
   [EthChainId.MAINNET]: '',
   [EthChainId.ROPSTEN]: '0x018a42A8794198c99d8d32bBAA5c575430f7D985',
   [BscChainId.MAINNET]: '',
   [BscChainId.TESTNET]: '',
-}
+};
 
 export const LKT_TOKEN = {
   [EthChainId.MAINNET]: '0xd9b89eee86b15634c70cab51baf85615a4ab91a1',

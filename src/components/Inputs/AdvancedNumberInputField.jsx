@@ -1,6 +1,5 @@
 import { Button, HStack, Input, InputGroup, InputRightAddon, InputRightElement, Text } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
-import { formatUnits } from '@ethersproject/units';
 import { BigNumberInput } from 'big-number-input';
 import { useState } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';

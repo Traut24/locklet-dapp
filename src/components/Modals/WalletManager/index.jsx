@@ -3,7 +3,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import MetamaskIcon from 'src/assets/images/providers/metamask.png';
 import AccountDetails from 'src/components/AccountDetails';
 import { fortmatic, injected, portis } from 'src/connectors';
@@ -11,7 +11,6 @@ import { OVERLAY_READY } from 'src/connectors/Fortmatic';
 import { SUPPORTED_WALLETS } from 'src/constants';
 import usePrevious from 'src/hooks/usePrevious';
 import { useToggleModal } from 'src/hooks/useToggleModal';
-import { CLOSE_MODAL, OPEN_MODAL } from 'src/store';
 import styled from 'styled-components';
 
 import Option from './Option';

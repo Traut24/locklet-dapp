@@ -17,13 +17,13 @@ import NewTokenLockPage from 'src/pages/Locks/NewTokenLockPage';
 import { NavMenu } from './Navigation/NavMenu';
 import { theme } from './Theme';
 
-const AppWrapper = () => {
+export default function AppWrapper() {
   return (
     <ChakraProvider theme={theme}>
       <App />
     </ChakraProvider>
   );
-};
+}
 
 const App = () => {
   return (
@@ -101,5 +101,3 @@ const App = () => {
     </>
   );
 };
-
-export default AppWrapper;

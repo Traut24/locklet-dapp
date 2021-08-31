@@ -6,7 +6,7 @@ import { useToggleModal } from 'src/hooks/useToggleModal';
 export default function RevokeLock() {
   const { chainId, account } = useWeb3React();
 
-  const revokeLockModalOpen = useSelector(state => state.modals.revokeLock.show);
+  const revokeLockModalOpen = useSelector((state) => state.modals.revokeLock.show);
   const toggleRevokeLockModal = useToggleModal('revokeLock');
 
   // const revokeLockModalProps = useSelector(state => state.modals.revokeLock)
@@ -23,4 +23,4 @@ export default function RevokeLock() {
       </ModalContent>
     </Modal>
   );
-};
+}

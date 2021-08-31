@@ -1,4 +1,4 @@
-import { AddIcon, ArrowForwardIcon, EditIcon, ExternalLinkIcon, HamburgerIcon, RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
+import { ArrowForwardIcon, SettingsIcon } from '@chakra-ui/icons';
 import {
   Alert,
   AlertIcon,
@@ -9,29 +9,14 @@ import {
   Center,
   CircularProgress,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
   HStack,
   IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Spacer,
-  Stack,
   Table,
-  Tag,
   Tbody,
   Td,
   Text,
@@ -43,13 +28,11 @@ import { Contract } from '@ethersproject/contracts';
 import { BigNumber } from 'ethers/node_modules/@ethersproject/contracts/node_modules/@ethersproject/bignumber';
 import { useEffect, useMemo, useState } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
-import { FaArrowCircleRight, FaBan, FaCoins, FaExternalLinkAlt, FaLink, FaRegSadCry, FaSadCry, FaUndo, FaUndoAlt } from 'react-icons/fa';
-import { Link as RouterLink } from 'react-router-dom';
+import { FaBan, FaCoins } from 'react-icons/fa';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTokenVaultContract } from 'src/hooks/useContract';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
-import { getTokenLocks } from 'src/services/lockletApi';
 import { toLockWithRecipients } from 'src/utils/converter';
 import ERC20 from 'contracts/ERC20.json';
 
@@ -229,10 +212,7 @@ export default function YourTokenLocks() {
             <Tbody>
               {paggedTokenLocks.map((row, index) => (
                 <Tr key={index}>
-                  <Td whiteSpace="nowrap">
-                    
-                    {row?.idAsNumber}
-                  </Td>
+                  <Td whiteSpace="nowrap">{row?.idAsNumber}</Td>
                   <Td whiteSpace="nowrap">
                     {row?.isInitiator ? (
                       <Badge variant="solid" colorScheme="blue" rounded="md" fontSize="0.7em" px="2" mr="2">
@@ -258,9 +238,11 @@ export default function YourTokenLocks() {
                       <MenuButton as={IconButton} aria-label="Options" icon={<SettingsIcon />} variant="outline" />
                       <MenuList>
                         {row.isInitiator ? (
-                          <MenuItem icon={<FaBan />}
+                          <MenuItem
+                            icon={<FaBan />}
                             isDisabled={!row.isRevocable || row.isRevoked}
-                              onClick={() => toggleRevokeLockModal({ test: '1', test2: '2' })}>
+                            onClick={() => toggleRevokeLockModal({ test: '1', test2: '2' })}
+                          >
                             Revoke Lock
                           </MenuItem>
                         ) : (

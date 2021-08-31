@@ -1,4 +1,5 @@
 import { put, takeLatest } from 'redux-saga/effects';
+
 import { CLOSE_MODAL, OPEN_MODAL } from '../actions';
 import { SET_MODAL_DATA } from '../mutations';
 
@@ -8,7 +9,7 @@ function* openModal({ name, type, ...props }) {
     name,
     data: {
       show: true,
-      ...props
+      ...props,
     },
   });
 }

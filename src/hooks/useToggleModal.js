@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { CLOSE_MODAL, OPEN_MODAL } from 'src/store';
 
 export function useToggleModal(modalName) {

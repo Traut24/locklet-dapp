@@ -1,9 +1,6 @@
-import { Badge, Box, Button, ButtonGroup, Flex, FormControl, FormLabel, HStack, Input, InputGroup, InputLeftElement, Spacer, Stack, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { BsSearch } from 'react-icons/bs';
+import { Box, Button, ButtonGroup, Spacer, Stack } from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
-import { useActiveWeb3React } from 'src/hooks';
 
 import TokenLocksTable from '../TokenLocksTable';
 

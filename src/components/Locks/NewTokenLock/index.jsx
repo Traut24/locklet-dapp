@@ -1,8 +1,35 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Badge, Box, Button, ButtonGroup, Collapse, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Link, useColorModeValue as mode, ScaleFade, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
+  ButtonGroup,
+  Collapse,
+  Fade,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Input,
+  Link,
+  Spacer,
+  Stack,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useNumberInput,
+} from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
-import capitalize from 'capitalize-sentence'
+import capitalize from 'capitalize-sentence';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
@@ -605,7 +632,8 @@ export default function NewTokenLock() {
                   <Text>Your lock has been created successfully.</Text>
                   <Link href="#" color="brand.800" isExternal>
                     View on Explorer
-                  </Link>{' — '}
+                  </Link>
+                  {' — '}
                   <Link href="#" color="brand.800" isExternal>
                     Your Locks
                   </Link>

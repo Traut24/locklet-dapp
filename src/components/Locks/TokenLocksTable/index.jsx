@@ -1,6 +1,5 @@
 import {
   Badge,
-  Box,
   Button,
   ButtonGroup,
   Center,
@@ -9,7 +8,6 @@ import {
   Heading,
   HStack,
   Link,
-  useColorModeValue as mode,
   Table,
   Tbody,
   Td,
@@ -61,7 +59,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
       let amount = data?.totalAmount;
       if (typeof data?.isInitiator !== 'undefined' && data?.isInitiator == false && account)
         amount = data?.recipients?.find((x) => x.recipientAddress == account)?.amount;
-      // return formatUnits(amount, data.tokenDecimals);
+      return formatUnits(amount, data.tokenDecimals);
     },
   },
   {

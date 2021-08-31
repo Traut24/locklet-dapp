@@ -1,6 +1,6 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
+import { load, save } from 'redux-localstorage-simple';
 import createSagaMiddleware from 'redux-saga';
-import { save, load } from 'redux-localstorage-simple';
 
 import reducers from './reducers';
 import sagas from './sagas';

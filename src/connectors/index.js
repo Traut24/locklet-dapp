@@ -7,19 +7,32 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { FortmaticConnector } from './Fortmatic';
 import { NetworkConnector } from './NetworkConnector';
 
-const NETWORK_URL = process.env.REACT_APP_NETWORK_URL;
+const ETH_NETWORK_URL = process.env.REACT_APP_ETH_NETWORK_URL;
+const BSC_NETWORK_URL = process.env.REACT_APP_BSC_NETWORK_URL;
+
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY;
 const PORTIS_ID = process.env.REACT_APP_PORTIS_ID;
 
-export const NETWORK_CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1');
+export const ETH_NETWORK_CHAIN_ID = parseInt(process.env.REACT_APP_ETH_CHAIN_ID ?? '1');
+export const BSC_NETWORK_CHAIN_ID = parseInt(process.env.REACT_APP_BSC_CHAIN_ID ?? '56');
 
-if (typeof NETWORK_URL === 'undefined') {
-  throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`);
+if (typeof ETH_NETWORK_URL === 'undefined') {
+  throw new Error(`ETH_NETWORK_URL must be a defined environment variable`);
 }
 
-export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
-});
+if (typeof BSC_NETWORK_URL === 'undefined') {
+  throw new Error(`BSC_NETWORK_URL must be a defined environment variable`);
+}
+
+export const network = (network) => {
+  switch (network) {
+    case 'eth':
+      return new NetworkConnector({ urls: { [ETH_NETWORK_CHAIN_ID]: ETH_NETWORK_URL } });
+
+    case 'bsc':
+      return new NetworkConnector({ urls: { [BSC_NETWORK_CHAIN_ID]: BSC_NETWORK_URL } });
+  }
+};
 
 let networkLibrary;
 export function getNetworkLibrary() {
@@ -32,7 +45,7 @@ export const injected = new InjectedConnector({
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: NETWORK_URL },
+  rpc: { 1: ETH_NETWORK_URL },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   pollingInterval: 15000,
@@ -52,8 +65,7 @@ export const portis = new PortisConnector({
 
 // mainnet only
 export const walletlink = new WalletLinkConnector({
-  url: NETWORK_URL,
-  appName: 'Uniswap',
-  appLogoUrl:
-    'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg',
+  url: ETH_NETWORK_URL,
+  appName: 'Locklet',
+  appLogoUrl: 'https://www.locklet.finance/static/img/favicon.png',
 });

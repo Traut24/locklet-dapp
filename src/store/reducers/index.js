@@ -1,11 +1,11 @@
 import app from './app';
+import metadata from './metadata';
 import modals from './modals';
 import transactions from './transactions';
-import metadata from './metadata';
 
 export default {
   app,
   modals,
   transactions,
-  metadata
+  metadata,
 };

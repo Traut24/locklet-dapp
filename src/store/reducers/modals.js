@@ -3,17 +3,16 @@ import { SET_MODAL_DATA } from '../mutations';
 const initialState = {
   walletManager: { show: false },
   revokeLock: { show: false },
-  claimTokens: { show: false }
+  claimTokens: { show: false },
 };
 
 export default (state = initialState, action) => {
-  console.log('Action', action)
   switch (action.type) {
     case SET_MODAL_DATA:
       return {
         ...state,
         [action.name]: {
-          ...action.data
+          ...action.data,
         },
       };
     default:

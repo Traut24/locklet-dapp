@@ -1,9 +1,9 @@
-import { APPEND_METADATA, SET_BLOCK_NUMBER, SET_NETWORK, SET_NETWORK_MISSMATCH } from '../mutations';
+import { SET_BLOCK_NUMBER, SET_NETWORK, SET_NETWORK_MISSMATCH } from '../mutations';
 
 const initialState = {
   network: 'eth',
   networkMissmatch: false,
-  blockNumber: {}
+  blockNumber: {},
 };
 
 export default (state = initialState, action) => {
@@ -22,8 +22,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         blockNumber: {
-          [action.chainId]: typeof state.blockNumber[action.chainId] !== 'number' ?
-            action.blockNumber : Math.max(action.blockNumber, state.blockNumber[action.chainId]),
+          [action.chainId]:
+            typeof state.blockNumber[action.chainId] !== 'number' ? action.blockNumber : Math.max(action.blockNumber, state.blockNumber[action.chainId]),
         },
       };
     default:

@@ -7,7 +7,7 @@ export default (state = initialState, action) => {
     case APPEND_METADATA:
       return {
         ...state,
-        [action.key]: action.value
+        [action.key]: action.value,
       };
     default:
       return state;

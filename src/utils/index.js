@@ -107,3 +107,10 @@ export function formatDate(date) {
     day: '2-digit',
   });
 }
+
+export function formatUsd(usd) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    currency: 'USD',
+  }).format(usd);
+}

@@ -6,49 +6,7 @@ import { getChainsStats, getMarketStats } from 'src/services/lockletApi';
 
 import { StatCard } from './StatCard';
 
-export const illustrations = {
-  TVL: {
-    icon: FaDollarSign,
-    color: 'gray.500',
-  },
-  LKT: {
-    image: LktLogo,
-  },
-  HODL: {
-    icon: FaUsers,
-    color: 'gray.500',
-  },
-};
-
-export const data = [
-  {
-    id: 'TVL',
-    label: 'Total Value Locked',
-    value: 5604.16,
-    currency: '$',
-  },
-  {
-    id: 'LKT',
-    label: 'Locklet Token',
-    value: 391.59,
-    change: {
-      value: 30.98,
-      percent: +1.84,
-    },
-    currency: '$',
-  },
-  {
-    id: 'HODL',
-    label: 'Holders',
-    value: 177,
-    change: {
-      value: 12,
-      percent: -0.72,
-    },
-  },
-];
-
-export default function Stats(props) {
+export default function Stats() {
   const [marketStats, setMarketStats] = useState(null);
   const [chainsStats, setChainsStats] = useState(null);
 
@@ -90,6 +48,7 @@ export default function Stats(props) {
           currency: '$',
         }}
       />
+      {/* Total Holders */}
       <StatCard
         icon={FaUsers}
         accentColor="gray.500"
