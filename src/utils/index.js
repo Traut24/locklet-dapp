@@ -1,3 +1,5 @@
+import { ChainId as BscChainId } from '@pancakeswap/sdk';
+import { ChainId as EthChainId } from '@uniswap/sdk';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -20,8 +22,22 @@ const ETHERSCAN_PREFIXES = {
   42: 'kovan.',
 };
 
-export function getEtherscanLink(chainId, data, type) {
-  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`;
+const BSCSCAN_PREFIXES = {
+  56: '',
+  97: 'testnet.',
+}
+
+export function getExplorerLink(chainId, data, type) {
+  let prefix = null;
+
+  const ethNetworks = [EthChainId.MAINNET, EthChainId.ROPSTEN, EthChainId.RINKEBY, EthChainId.GÖRLI, EthChainId.KOVAN];
+  const bscNetworks = [BscChainId.MAINNET, BscChainId.ROPSTEN];
+  
+  if (ethNetworks.includes(chainId)) {
+    prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`;
+  } else if (bscNetworks.includes(chainId)) {
+    prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[56]}bscscan.com`;
+  }
 
   switch (type) {
     case 'transaction': {
@@ -105,6 +121,13 @@ export function formatDate(date) {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
+  });
+}
+
+export function formatTime(date) {
+  return date.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
   });
 }
 

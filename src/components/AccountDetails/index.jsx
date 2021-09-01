@@ -7,7 +7,7 @@ import WalletConnectIcon from 'src/assets/images/providers/walletConnectIcon.svg
 import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
 import { SUPPORTED_WALLETS } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
-import { getEtherscanLink, shortenAddress } from 'src/utils';
+import { getExplorerLink, shortenAddress } from 'src/utils';
 import styled from 'styled-components';
 
 import Identicon from '../Identicon';
@@ -222,7 +222,7 @@ export default function AccountDetails({ openOptions }) {
                       </Copy>
                     )}
                     {chainId && account && (
-                      <AddressLink hasENS={false} isENS={false} href={getEtherscanLink(chainId, account, 'address')} target="_blank">
+                      <AddressLink hasENS={false} isENS={false} href={getExplorerLink(chainId, account, 'address')} target="_blank">
                         <LinkIcon size={16} />
                         <span style={{ marginLeft: '4px' }}>View on Explorer</span>
                       </AddressLink>

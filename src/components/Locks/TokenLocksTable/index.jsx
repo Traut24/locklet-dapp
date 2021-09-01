@@ -3,10 +3,12 @@ import {
   Button,
   ButtonGroup,
   Center,
+  Circle,
   CircularProgress,
   Flex,
   Heading,
   HStack,
+  Image,
   Link,
   Table,
   Tbody,
@@ -14,6 +16,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from '@chakra-ui/react';
 import { formatUnits } from '@ethersproject/units';
@@ -25,7 +28,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { ALL_TOKEN_LOCKS_PAGE_SIZE, LATEST_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { getTokenLocks } from 'src/services/lockletApi';
-import { formatDate, getEtherscanLink } from 'src/utils';
+import { formatDate, formatTime, getExplorerLink } from 'src/utils';
 
 export const TOKEN_LOCKS_TABLE_COLUMNS = [
   {
@@ -42,11 +45,11 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
       return (
         <HStack>
           {data?.tokenLogoUrl && (
-            <Circle rounded="full" size="6">
+            <Circle rounded="full" size="5">
               <Image src={data.tokenLogoUrl} />
             </Circle>
           )}
-          <Link href={getEtherscanLink(chainId, data.tokenAddress, 'token')} color="brand.500" isExternal>
+          <Link href={getExplorerLink(chainId, data.tokenAddress, 'token')} color="brand.500" isExternal>
             <Text fontWeight="semibold">{data.tokenSymbol}</Text>
           </Link>
         </HStack>
@@ -78,7 +81,13 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
     Cell: function UnlockStartDateCell({ data }) {
       let date = data?.startTime;
       if (!(date instanceof Date)) date = new Date(data?.startTime);
-      return formatDate(date);
+      return (
+        <>
+          <Tooltip label={formatTime(date)} placement="bottom" closeOnClick={false} rounded="md">
+            {formatDate(date)}
+          </Tooltip>
+        </>
+      );
     },
   },
   {
@@ -100,9 +109,10 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
       if (!(startDate instanceof Date)) startDate = new Date(data?.startTime);
 
       const isLocked = startDate > currentDate;
+      const isRevoked = data?.isRevoked;
       return (
-        <Badge variant="solid" colorScheme={isLocked ? 'green' : 'blackAlpha'} rounded="md" fontSize="0.7em" px="2">
-          {isLocked ? 'Locked' : 'Unlocked'}
+        <Badge variant="solid" colorScheme={isRevoked ? 'red' : (isLocked ? 'green' : 'blackAlpha')} rounded="md" fontSize="0.7em" px="2">
+          {isRevoked ? 'Revoked' : (isLocked ? 'Locked' : 'Unlocked')}
         </Badge>
       );
     },
@@ -128,14 +138,19 @@ export default function TokenLocksTable(props) {
     setIsLoading(true);
     setCurrentPage(page);
 
+    let _tokenLocks = [];
+    let _totalTokenLocks = 0;
     try {
       const { data: tokensLocksData } = await getTokenLocks(chainId, page, mode == 'full' ? ALL_TOKEN_LOCKS_PAGE_SIZE : LATEST_TOKEN_LOCKS_PAGE_SIZE);
       if (tokensLocksData?.results) {
-        setTokenLocks(tokensLocksData.results);
-        if (tokensLocksData?.totalResults) setTotalTokenLocks(tokensLocksData.totalResults);
+        _tokenLocks = tokensLocksData.results;
+        _totalTokenLocks = tokensLocksData.totalResults;
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setTokenLocks(_tokenLocks);
+      setTotalTokenLocks(_totalTokenLocks);
     }
 
     setIsLoading(false);

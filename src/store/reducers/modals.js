@@ -4,6 +4,7 @@ const initialState = {
   walletManager: { show: false },
   revokeLock: { show: false },
   claimTokens: { show: false },
+  pullRefund: { show: false }
 };
 
 export default (state = initialState, action) => {

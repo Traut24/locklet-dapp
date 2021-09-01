@@ -76,6 +76,8 @@ export default function TransactionSync() {
   const pendingTransactions = usePendingTransactions();
 
   useEffect(() => {
+    console.log('pendingTransactionsKeys', pendingTransactionsKeys)
+    
     const pendingTransactionsKeys = Object.keys(pendingTransactions);
     pendingTransactionsKeys.forEach((pendingTxHash) => {
       const pendingTx = pendingTransactions[pendingTxHash];
@@ -83,7 +85,7 @@ export default function TransactionSync() {
       const now = new Date().getTime();
       if (pendingTx.addedTime <= new Date(now + 86400 * 1000)) toast.loading('Your transaction is being confirmed...', { id: pendingTx.hash });
     });
-  }, []);
+  }, [chainId]);
 
   return null;
 }

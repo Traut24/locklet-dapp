@@ -10,7 +10,7 @@ export default function useTokensMetadata() {
 
   const chainTokenList = useMemo(() => {
     return metadata[`token-list-${chainId}`];
-  }, [chainId]);
+  }, [chainId, metadata]);
 
   return chainTokenList;
 }

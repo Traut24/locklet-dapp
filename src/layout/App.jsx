@@ -2,6 +2,8 @@ import { ChakraProvider, Flex, HStack } from '@chakra-ui/react';
 import { Toaster } from 'react-hot-toast';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Logo from 'src/components/Logo';
+import ClaimTokens from 'src/components/Modals/Tokens/ClaimTokens';
+import PullRefund from 'src/components/Modals/Tokens/PullRefund';
 import RevokeLock from 'src/components/Modals/Tokens/RevokeLock';
 import WalletManager from 'src/components/Modals/WalletManager';
 import NetworkSelector from 'src/components/NetworkSelector';
@@ -96,7 +98,10 @@ const App = () => {
         </Web3ReactManager>
 
         <WalletManager />
+        
         <RevokeLock />
+        <ClaimTokens />
+        <PullRefund />
       </Flex>
     </>
   );

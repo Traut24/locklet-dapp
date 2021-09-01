@@ -17,8 +17,6 @@ export default function Web3ReactManager({ children }) {
   const appNetwork = useSelector((state) => state.app.network);
   const [previousAppNetwork, setPreviousAppNetwork] = useState(appNetwork);
 
-  // useEffect(() => console.log('NetworkChainId', chainId), [chainId])
-
   // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
   useEffect(() => {
     const networkConnector = network(appNetwork);

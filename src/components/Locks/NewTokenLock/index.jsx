@@ -83,11 +83,11 @@ export default function NewTokenLock() {
   tomorrowDate.setHours(0, 0, 0, 0);
 
   const [startDate, setStartDate] = useState(tomorrowDate);
-  const [lStartDate, setLStartDate] = useState(tomorrowDate);
 
-  const minLEndDate = new Date();
+  const minLEndDate = new Date(tomorrowDate);
   minLEndDate.setDate(tomorrowDate.getDate() + 1);
 
+  const [lStartDate, setLStartDate] = useState(tomorrowDate);
   const [lEndDate, setLEndDate] = useState(minLEndDate);
 
   const [canBeRevocable, setCanBeRevocable] = useState(false);
@@ -331,7 +331,7 @@ export default function NewTokenLock() {
       addTx(lockTx);
 
       const lockResult = await lockTx.wait();
-      if (lockResult?.status === 1) console.log('Success!');
+      if (lockResult?.status === 1) console.log('OnSuccess')
     } catch (err) {
       console.error(err);
       if (err?.error?.message || err?.message || err?.reason) toast.error(capitalize(err?.error?.message || err?.message || err?.reason));

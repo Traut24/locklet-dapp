@@ -10,6 +10,7 @@ export const AVERAGE_BLOCK_TIME_IN_SECS = 13;
 export const TOKEN_VAULT = {
   [EthChainId.MAINNET]: '',
   [EthChainId.ROPSTEN]: '0x018a42A8794198c99d8d32bBAA5c575430f7D985',
+
   [BscChainId.MAINNET]: '',
   [BscChainId.TESTNET]: '',
 };
@@ -17,6 +18,7 @@ export const TOKEN_VAULT = {
 export const LKT_TOKEN = {
   [EthChainId.MAINNET]: '0xd9b89eee86b15634c70cab51baf85615a4ab91a1',
   [EthChainId.ROPSTEN]: '0xde8fa069707b6322ad45d001425b617f4f1930bd',
+  
   [BscChainId.MAINNET]: '',
   [BscChainId.TESTNET]: '',
 };
@@ -91,15 +93,36 @@ export const SUPPORTED_WALLETS = {
 
 export const NetworkContextName = 'NETWORK';
 
+export const EthereumAlias = 'ethereum';
+export const BinanceAlias = 'binance';
+
 export const TRUST_WALLET_NETWORK_ALIAS = {
-  [EthChainId.MAINNET | EthChainId.ROPSTEN]: 'ethereum',
-  [BscChainId.MAINNET]: 'binance',
+  [EthChainId.MAINNET]: EthereumAlias,
+  [EthChainId.ROPSTEN]: EthereumAlias,
+  
+  [BscChainId.MAINNET]: BinanceAlias,
+  [BscChainId.TESTNET]: BinanceAlias
 };
 
 export const getTrustWalletTokenListUrl = (blockchain) => {
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchain}/tokenlist.json`;
 };
 
-export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 5;
-export const ALL_TOKEN_LOCKS_PAGE_SIZE = 10;
-export const YOUR_TOKEN_LOCKS_PAGE_SIZE = 10;
+export const LKT_ERC20_TOKEN_INFOS = {
+  type: 'ERC20',
+  name: 'Locklet',
+  symbol: 'LKT',
+  decimals: 18,
+  logoURI: 'https://www.locklet.finance/static/img/favicon.png',
+  address: LKT_TOKEN[EthChainId.ROPSTEN],
+};
+
+export const LKT_BEP20_TOKEN_INFOS = {
+  ...LKT_ERC20_TOKEN_INFOS,
+  type: 'BEP2',
+  address: LKT_TOKEN[BscChainId.TESTNET],
+};
+
+export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 6;
+export const ALL_TOKEN_LOCKS_PAGE_SIZE = 12;
+export const YOUR_TOKEN_LOCKS_PAGE_SIZE = 6;
