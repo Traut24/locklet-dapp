@@ -44,6 +44,7 @@ export default function Stats() {
           value: marketStats?.price ?? null,
           change: {
             percent: marketStats?.price_change_percentage_24h?.value ?? null,
+            direction: marketStats?.price_change_percentage_24h?.direction ?? null
           },
           currency: '$',
         }}

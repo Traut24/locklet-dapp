@@ -8,7 +8,7 @@ export const StatCard = (props) => {
   const { label, currency, value, change } = data;
 
   const direction = change?.direction;
-  const isNegative = change?.percent < 0;
+  console.log('direction', change)
 
   return (
     <Box bg={'white'} px="6" py="4" shadow="base" rounded="lg">
@@ -33,7 +33,7 @@ export const StatCard = (props) => {
         <Flex justify="space-between" align="center" fontWeight="medium" fontSize="sm">
           <Skeleton rounded="md" width={!change?.percent && '60px'} isLoaded={change?.percent}>
             <HStack spacing="0" color="gray.500">
-              <Indicator type={direction ?? (isNegative ? 'down' : 'up')} />
+              {direction && <Indicator type={direction} />}
               <Text>
                 {/* direction == 'down' || isNegative ? '-' : '+' */}
                 {change.percent}%
