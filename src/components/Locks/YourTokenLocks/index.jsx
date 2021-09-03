@@ -1,44 +1,20 @@
 import { ArrowForwardIcon, SettingsIcon } from '@chakra-ui/icons';
-import {
-  Alert,
-  AlertIcon,
-  Badge,
-  Box,
-  Button,
-  ButtonGroup,
-  Center,
-  CircularProgress,
-  Flex,
-  Heading,
-  HStack,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Alert, AlertIcon, Badge, Box, Button, ButtonGroup, Center, CircularProgress, Flex, Heading, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { Contract } from '@ethersproject/contracts';
-import { BigNumber } from 'ethers/node_modules/@ethersproject/contracts/node_modules/@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
+import ERC20 from 'contracts/ERC20.json';
 import { useEffect, useMemo, useState } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
 import { FaBan, FaCoins } from 'react-icons/fa';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTokenVaultContract } from 'src/hooks/useContract';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
 import { toLockWithRecipients } from 'src/utils/converter';
-import ERC20 from 'contracts/ERC20.json';
+import { BigNumber } from '@ethersproject/bignumber';
 
 import { TOKEN_LOCKS_TABLE_COLUMNS } from '../TokenLocksTable';
-import { useToggleModal } from 'src/hooks/useToggleModal';
-import { formatUnits } from '@ethersproject/units';
 
 export default function YourTokenLocks() {
   // app state
@@ -85,8 +61,12 @@ export default function YourTokenLocks() {
 
     mergedTokenLocks = await Promise.all(
       mergedTokenLocks.map(async (x) => {
-        let claimAmount = null;
-        if (!x.isInitiator) claimAmount = (await tokenVault.getClaimByLockAndRecipient(x.id, account))[1] ?? null;
+        let claimAmount = BigNumber.from(0);
+        if (!x.isInitiator) {
+          try {
+            claimAmount = (await tokenVault.getClaimByLockAndRecipient(x.id, account))[1] ?? BigNumber.from(0);
+          } catch (err) { }
+        }
 
         return {
           ...x,
