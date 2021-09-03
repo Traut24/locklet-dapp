@@ -1,17 +1,13 @@
 {
   "private": true,
-  "name": "locklet-private-dapp",
+  "name": "locklet-dapp",
   "version": "1.0.0",
-  "description": "Locklet Private Sale dApp",
-  "main": "index.js",
+  "description": "Locklet dApp",
+  "main": "src/index.jsx",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --open",
     "build": "cross-env NODE_ENV=production webpack",
     "format": "prettier --write 'src/**/*.js'"
-  },
-  "engines": {
-    "node": ">=10",
-    "npm": ">=6"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.13",

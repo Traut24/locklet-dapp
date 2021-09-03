@@ -1,5 +1,6 @@
 import { ArrowForwardIcon, SettingsIcon } from '@chakra-ui/icons';
 import { Alert, AlertIcon, Badge, Box, Button, ButtonGroup, Center, CircularProgress, Flex, Heading, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
@@ -12,7 +13,6 @@ import { useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
 import { toLockWithRecipients } from 'src/utils/converter';
-import { BigNumber } from '@ethersproject/bignumber';
 
 import { TOKEN_LOCKS_TABLE_COLUMNS } from '../TokenLocksTable';
 
