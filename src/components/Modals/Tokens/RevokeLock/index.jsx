@@ -1,13 +1,13 @@
 import { Button, Code, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useActiveWeb3React } from 'src/hooks';
-import { useToggleModal } from 'src/hooks/useToggleModal';
 import capitalize from 'capitalize-sentence';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import { TOKEN_VAULT } from 'src/constants';
-import { useTokenVaultContract } from 'src/hooks/useContract';
+import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
+import { useTokenVaultContract } from 'src/hooks/useContract';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 
 export default function RevokeLock() {
   // app state
@@ -23,6 +23,7 @@ export default function RevokeLock() {
   }, [chainId]);
 
   const lockIndex = useSelector((state) => state.modals.revokeLock.lockIndex);
+  const onSuccessCallback = useSelector((state) => state.modals.revokeLock.onSuccess);
 
   // token vault management
   const tokenVaultAddr = TOKEN_VAULT[chainId];
@@ -43,7 +44,10 @@ export default function RevokeLock() {
       addTx(revokeTx);
 
       const revokeResult = await revokeTx.wait();
-      if (revokeResult?.status === 1) toggleRevokeLockModal();
+      if (revokeResult?.status === 1) {
+        if (onSuccessCallback) onSuccessCallback();
+        toggleRevokeLockModal();
+      }
     } catch (err) {
       console.error(err);
       if (err?.error?.message || err?.message || err?.reason) toast.error(capitalize(err?.error?.message || err?.message || err?.reason));

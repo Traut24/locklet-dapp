@@ -1,5 +1,5 @@
 import { darken } from 'polished';
-import Loader from 'src/components/Loader';
+import CircleLoader from 'src/components/Loaders/CircleLoader';
 import { injected } from 'src/connectors';
 import { SUPPORTED_WALLETS } from 'src/constants';
 import styled from 'styled-components';
@@ -16,7 +16,7 @@ const PendingSection = styled.div`
     width: 100%;
   }
 `;
-const StyledLoader = styled(Loader)`
+const StyledLoader = styled(CircleLoader)`
   margin-right: 1rem;
 `;
 

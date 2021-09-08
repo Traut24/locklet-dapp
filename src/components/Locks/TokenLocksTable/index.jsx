@@ -1,34 +1,16 @@
-import {
-  Badge,
-  Button,
-  ButtonGroup,
-  Center,
-  Circle,
-  CircularProgress,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Link,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-} from '@chakra-ui/react';
+import { Badge, Button, ButtonGroup, Center, Circle, CircularProgress, Flex, Heading, HStack, Image, Link, Table, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { formatUnits } from '@ethersproject/units';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import TextLoader from 'src/components/Loaders/TextLoader';
 import { ALL_TOKEN_LOCKS_PAGE_SIZE, LATEST_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import { getTokenLocks } from 'src/services/lockletApi';
-import { formatDate, formatTime, getExplorerLink } from 'src/utils';
+import { formatDate, formatTime } from 'src/utils';
 
 export const TOKEN_LOCKS_TABLE_COLUMNS = [
   {
@@ -49,7 +31,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
               <Image src={data.tokenLogoUrl} />
             </Circle>
           )}
-          <Link href={getExplorerLink(chainId, data.tokenAddress, 'token')} color="brand.500" isExternal>
+          <Link as={RouterLink} to={`/tokens/${data.tokenAddress}`} color="brand.500">
             <Text fontWeight="semibold">{data.tokenSymbol}</Text>
           </Link>
         </HStack>
@@ -70,7 +52,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
     Cell: function UnlockTypeCell({ data }) {
       const isLinear = data?.isLinear;
       return (
-        <Badge variant="outline" colorScheme={isLinear ? 'purple' : 'messenger'} rounded="md" fontSize="0.7em" px="2" mr="2">
+        <Badge variant="outline" colorScheme={isLinear ? 'purple' : 'messenger'} rounded="md" fontSize="0.7em" px="2" mr="2" verticalAlign="baseline">
           {isLinear ? 'Linear' : 'Unique'}
         </Badge>
       );
@@ -95,7 +77,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
     Cell: function StatusCell({ data }) {
       const isRevocable = data?.isRevocable;
       return (
-        <Badge colorScheme={isRevocable ? 'red' : 'green'} rounded="md" fontSize="0.7em" px="2">
+        <Badge colorScheme={isRevocable ? 'red' : 'green'} rounded="md" fontSize="0.7em" px="2" verticalAlign="baseline">
           {isRevocable ? 'Yes' : 'No'}
         </Badge>
       );
@@ -111,7 +93,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
       const isLocked = startDate > currentDate;
       const isRevoked = data?.isRevoked;
       return (
-        <Badge variant="solid" colorScheme={isRevoked ? 'red' : (isLocked ? 'green' : 'blackAlpha')} rounded="md" fontSize="0.7em" px="2">
+        <Badge variant="solid" colorScheme={isRevoked ? 'red' : (isLocked ? 'green' : 'blackAlpha')} rounded="md" fontSize="0.7em" px="2" verticalAlign="baseline">
           {isRevoked ? 'Revoked' : (isLocked ? 'Locked' : 'Unlocked')}
         </Badge>
       );
@@ -122,6 +104,8 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
 export default function TokenLocksTable(props) {
   // app state
   const { chainId } = useActiveWeb3React();
+
+  const toggleLockDetailsModal = useToggleModal('lockDetails');
 
   // props
   const { mode } = props;
@@ -185,12 +169,7 @@ export default function TokenLocksTable(props) {
   return (
     <>
       {isLoading ? (
-        <Center>
-          <Heading size="md" fontWeight="normal" mr="2">
-            Loading...
-          </Heading>
-          <CircularProgress size="25px" color="brand.500" isIndeterminate />
-        </Center>
+        <TextLoader />
       ) : (
         <>
           <Table variant="simple" fontSize="md">
@@ -217,7 +196,7 @@ export default function TokenLocksTable(props) {
                     );
                   })}
                   <Td textAlign="right">
-                    <Button variant="link" colorScheme="brand">
+                    <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id })}>
                       See details
                     </Button>
                   </Td>

@@ -76,8 +76,6 @@ export default function TransactionSync() {
   const pendingTransactions = usePendingTransactions();
 
   useEffect(() => {
-    console.log('pendingTransactionsKeys', pendingTransactionsKeys)
-    
     const pendingTransactionsKeys = Object.keys(pendingTransactions);
     pendingTransactionsKeys.forEach((pendingTxHash) => {
       const pendingTx = pendingTransactions[pendingTxHash];

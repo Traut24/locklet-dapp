@@ -9,18 +9,18 @@ export const AVERAGE_BLOCK_TIME_IN_SECS = 13;
 
 export const TOKEN_VAULT = {
   [EthChainId.MAINNET]: '',
-  [EthChainId.ROPSTEN]: '0x018a42A8794198c99d8d32bBAA5c575430f7D985',
+  [EthChainId.ROPSTEN]: '0x451C5798e6A78De45dF19F341065238E895c0F19',
 
   [BscChainId.MAINNET]: '',
-  [BscChainId.TESTNET]: '',
+  [BscChainId.TESTNET]: '0x1aF3Dc3f82CcB7e047f47C4ff10684Fc1eA388F3',
 };
 
 export const LKT_TOKEN = {
   [EthChainId.MAINNET]: '0xd9b89eee86b15634c70cab51baf85615a4ab91a1',
   [EthChainId.ROPSTEN]: '0xde8fa069707b6322ad45d001425b617f4f1930bd',
   
-  [BscChainId.MAINNET]: '',
-  [BscChainId.TESTNET]: '',
+  [BscChainId.MAINNET]: '0xde8fa069707b6322ad45d001425b617f4f1930bd',
+  [BscChainId.TESTNET]: '0x6bD8b4C060a90B86C57D71226a7E23Cf9f308429',
 };
 
 export const getLockletToken = (chainId) => {
@@ -93,34 +93,33 @@ export const SUPPORTED_WALLETS = {
 
 export const NetworkContextName = 'NETWORK';
 
-export const EthereumAlias = 'ethereum';
-export const BinanceAlias = 'binance';
+export const ETH_TRUST_WALLET_ALIAS = 'ethereum';
+export const BSC_TRUST_WALLET_ALIAS = 'binance';
 
 export const TRUST_WALLET_NETWORK_ALIAS = {
-  [EthChainId.MAINNET]: EthereumAlias,
-  [EthChainId.ROPSTEN]: EthereumAlias,
+  [EthChainId.MAINNET]: ETH_TRUST_WALLET_ALIAS,
+  [EthChainId.ROPSTEN]: ETH_TRUST_WALLET_ALIAS,
   
-  [BscChainId.MAINNET]: BinanceAlias,
-  [BscChainId.TESTNET]: BinanceAlias
+  [BscChainId.MAINNET]: BSC_TRUST_WALLET_ALIAS,
+  [BscChainId.TESTNET]: BSC_TRUST_WALLET_ALIAS
 };
 
-export const getTrustWalletTokenListUrl = (blockchain) => {
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchain}/tokenlist.json`;
-};
+export const ETH_COINGECKO_IDENTIFIER = 'ethereum';
+export const BSC_COINGECKO_IDENTIFIER = 'binance-smart-chain';
 
-export const LKT_ERC20_TOKEN_INFOS = {
-  type: 'ERC20',
+export const COINGECKO_PLATFORM_IDENTIFIER = {
+  [EthChainId.MAINNET]: ETH_COINGECKO_IDENTIFIER,
+  [EthChainId.ROPSTEN]: ETH_COINGECKO_IDENTIFIER,
+
+  [BscChainId.MAINNET]: BSC_COINGECKO_IDENTIFIER,
+  [BscChainId.TESTNET]: BSC_COINGECKO_IDENTIFIER
+}
+
+export const LKT_TOKEN_INFOS = {
   name: 'Locklet',
   symbol: 'LKT',
   decimals: 18,
   logoURI: 'https://www.locklet.finance/static/img/favicon.png',
-  address: LKT_TOKEN[EthChainId.ROPSTEN],
-};
-
-export const LKT_BEP20_TOKEN_INFOS = {
-  ...LKT_ERC20_TOKEN_INFOS,
-  type: 'BEP2',
-  address: LKT_TOKEN[BscChainId.TESTNET],
 };
 
 export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 6;

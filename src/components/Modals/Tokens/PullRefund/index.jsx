@@ -1,13 +1,13 @@
 import { Button, Center, Code, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from '@chakra-ui/react';
+import capitalize from 'capitalize-sentence';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { TOKEN_VAULT } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
 import { useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
-import capitalize from 'capitalize-sentence';
-import toast from 'react-hot-toast';
 
 export default function PullRefund() {
   // app state
@@ -24,6 +24,7 @@ export default function PullRefund() {
 
   const tokenAddress = useSelector((state) => state.modals.pullRefund.tokenAddress);
   const refundAmount = useSelector((state) => state.modals.pullRefund.refundAmount);
+  const onSuccessCallback = useSelector((state) => state.modals.pullRefund.onSuccess);
 
   // token vault management
   const tokenVaultAddr = TOKEN_VAULT[chainId];
@@ -44,7 +45,10 @@ export default function PullRefund() {
       addTx(refundTx);
 
       const refundResult = await refundTx.wait();
-      if (refundResult?.status === 1) togglePullRefundModal();
+      if (refundResult?.status === 1) {
+        if (onSuccessCallback) onSuccessCallback();
+        togglePullRefundModal();
+      }
     } catch (err) {
       console.error(err);
       if (err?.error?.message || err?.message || err?.reason) toast.error(capitalize(err?.error?.message || err?.message || err?.reason));
@@ -60,7 +64,9 @@ export default function PullRefund() {
         <ModalHeader>Pull Refund</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-        <Text mb="2">You are about to pull refund for <Code>Token {tokenAddress}</Code>.</Text>
+          <Text mb="2">
+            You are about to pull refund for <Code>Token {tokenAddress}</Code>.
+          </Text>
           <FormControl>
             <FormLabel htmlFor="refund-amount">Refund amount</FormLabel>
             <Input id="refund-amount" value={refundAmount} isReadOnly />
@@ -71,7 +77,9 @@ export default function PullRefund() {
           <Button variant="outline" mr={3} onClick={togglePullRefundModal}>
             Close
           </Button>
-          <Button colorScheme="blue" isLoading={isRefundLoading} onClick={pull}>Pull</Button>
+          <Button colorScheme="blue" isLoading={isRefundLoading} onClick={pull}>
+            Pull
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

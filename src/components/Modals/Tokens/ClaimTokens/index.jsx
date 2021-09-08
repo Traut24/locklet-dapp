@@ -1,27 +1,13 @@
-import {
-  Button,
-  Code,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Code, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from '@chakra-ui/react';
+import capitalize from 'capitalize-sentence';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { TOKEN_VAULT } from 'src/constants';
-import { useTokenVaultContract } from 'src/hooks/useContract';
-import { useToggleModal } from 'src/hooks/useToggleModal';
-import capitalize from 'capitalize-sentence';
-import toast from 'react-hot-toast';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
+import { useTokenVaultContract } from 'src/hooks/useContract';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 
 export default function ClaimTokens() {
   // app state
@@ -38,8 +24,7 @@ export default function ClaimTokens() {
 
   const lockIndex = useSelector((state) => state.modals.claimTokens.lockIndex);
   const claimAmount = useSelector((state) => state.modals.claimTokens.claimAmount);
-
-  console.log('claimAmount', claimAmount)
+  const onSuccessCallback = useSelector((state) => state.modals.claimTokens.onSuccess);
 
   // token vault management
   const tokenVaultAddr = TOKEN_VAULT[chainId];
@@ -60,7 +45,10 @@ export default function ClaimTokens() {
       addTx(claimTx);
 
       const claimResult = await claimTx.wait();
-      if (claimResult?.status === 1) toggleClaimTokensModal();
+      if (claimResult?.status === 1) {
+        if (onSuccessCallback) onSuccessCallback();
+        toggleClaimTokensModal();
+      }
     } catch (err) {
       console.error(err);
       if (err?.error?.message || err?.message || err?.reason) toast.error(capitalize(err?.error?.message || err?.message || err?.reason));

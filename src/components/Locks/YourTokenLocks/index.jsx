@@ -4,9 +4,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
 import { FaBan, FaCoins } from 'react-icons/fa';
+import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTokenVaultContract } from 'src/hooks/useContract';
@@ -129,6 +130,19 @@ export default function YourTokenLocks() {
     refreshTokensInfos();
   }, [tokenLocks, tokensMetadata]);
 
+  // callbacks
+  const onClaimSuccess = useCallback(() => {
+    refreshTokenLocks();
+  });
+
+  const onRevokeSuccess = useCallback(() => {
+    refreshTokenLocks();
+  });
+
+  const onPullRefundSuccess = useCallback(() => {
+    refreshTokenLocks();
+  });
+
   // pagination management
   const totalPages = useMemo(() => {
     return Math.ceil(totalTokenLocks / YOUR_TOKEN_LOCKS_PAGE_SIZE);
@@ -158,12 +172,7 @@ export default function YourTokenLocks() {
   return (
     <Box mx="auto" py="4" px="4" rounded="lg" bg="white" shadow="base" overflowX="auto">
       {isLoading && (
-        <Center>
-          <Heading size="md" fontWeight="normal" mr="2">
-            Loading...
-          </Heading>
-          <CircularProgress size="25px" color="brand.500" isIndeterminate />
-        </Center>
+        <TextLoader />
       )}
 
       {!isLoading && (!paggedTokenLocks || paggedTokenLocks?.length == 0) && (
@@ -229,20 +238,20 @@ export default function YourTokenLocks() {
                           <MenuItem
                             icon={<FaBan />}
                             isDisabled={!row.isRevocable || row.isRevoked}
-                            onClick={() => toggleRevokeLockModal({ lockIndex: row.idAsNumber })}
+                            onClick={() => toggleRevokeLockModal({ lockIndex: row.idAsNumber, onSuccess: onRevokeSuccess })}
                           >
                             Revoke Lock
                           </MenuItem>
                         ) : (
                           <MenuItem icon={<FaCoins />}
                             isDisabled={row.isRevoked}
-                            onClick={() => toggleClaimTokensModal({ lockIndex: row.idAsNumber, claimAmount: formatUnits(row.claimAmount, row.tokenDecimals) })}>
+                            onClick={() => toggleClaimTokensModal({ lockIndex: row.idAsNumber, claimAmount: formatUnits(row.claimAmount, row.tokenDecimals), onSuccess: onClaimSuccess })}>
                             Claim Tokens
                           </MenuItem>
                         )}
                         <MenuItem icon={<ArrowForwardIcon />}
                           isDisabled={!row.tokenRefundAmount || row.tokenRefundAmount.lte(BigNumber.from(0))}
-                          onClick={() => togglePullRefundModal({ tokenAddress: row.tokenAddress, refundAmount: formatUnits(row.tokenRefundAmount, row.tokenDecimals) })}>
+                          onClick={() => togglePullRefundModal({ tokenAddress: row.tokenAddress, refundAmount: formatUnits(row.tokenRefundAmount, row.tokenDecimals), onSuccess: onPullRefundSuccess })}>
                           Pull Refund
                         </MenuItem>
                         <MenuItem icon={<LinkIcon size="14px" />}>See details</MenuItem>

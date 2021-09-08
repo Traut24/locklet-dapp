@@ -1,9 +1,9 @@
-import { ChainId as BscChainId } from '@pancakeswap/sdk';
-import { ChainId as EthChainId } from '@uniswap/sdk';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
+import { ChainId as BscChainId } from '@pancakeswap/sdk';
+import { ChainId as EthChainId } from '@uniswap/sdk';
 import { JSBI, Percent } from '@uniswap/sdk';
 
 export function isAddress(value) {

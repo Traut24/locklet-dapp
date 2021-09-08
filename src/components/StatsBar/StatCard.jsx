@@ -8,7 +8,6 @@ export const StatCard = (props) => {
   const { label, currency, value, change } = data;
 
   const direction = change?.direction;
-  console.log('direction', change)
 
   return (
     <Box bg={'white'} px="6" py="4" shadow="base" rounded="lg">

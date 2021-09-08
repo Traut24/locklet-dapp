@@ -5,7 +5,7 @@ import { network } from 'src/connectors';
 import { NetworkContextName } from 'src/constants';
 import { useEagerConnect, useInactiveListener } from 'src/hooks';
 
-import Loader from '../Loader';
+import CircleLoader from '../Loaders/CircleLoader';
 
 export default function Web3ReactManager({ children }) {
   const { active } = useWeb3React();
@@ -56,7 +56,7 @@ export default function Web3ReactManager({ children }) {
 
   // if neither context is active, spin
   if (!active && !networkActive) {
-    return showLoader ? <Loader /> : null;
+    return showLoader ? <CircleLoader /> : null;
   }
 
   return children;

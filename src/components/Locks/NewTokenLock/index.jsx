@@ -1,31 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Button,
-  ButtonGroup,
-  Collapse,
-  Fade,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Input,
-  Link,
-  Spacer,
-  Stack,
-  Switch,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  useNumberInput,
-} from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Collapse, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
@@ -331,7 +304,9 @@ export default function NewTokenLock() {
       addTx(lockTx);
 
       const lockResult = await lockTx.wait();
-      if (lockResult?.status === 1) console.log('OnSuccess')
+      if (lockResult?.status === 1) {
+        // TODO: ...
+      }
     } catch (err) {
       console.error(err);
       if (err?.error?.message || err?.message || err?.reason) toast.error(capitalize(err?.error?.message || err?.message || err?.reason));

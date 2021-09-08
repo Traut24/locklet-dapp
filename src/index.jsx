@@ -1,3 +1,4 @@
+import { ChakraProvider } from '@chakra-ui/react';
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
@@ -6,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { NetworkContextName } from './constants';
 import App from './layout/App';
+import { theme } from './layout/Theme';
 import { store } from './store';
 import getLibrary from './utils/getLibrary';
 
@@ -21,7 +23,9 @@ if ('ethereum' in window) {
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
           <BrowserRouter>
-            <App />
+            <ChakraProvider theme={theme}>
+              <App />
+            </ChakraProvider>
           </BrowserRouter>
         </Provider>
       </Web3ProviderNetwork>
