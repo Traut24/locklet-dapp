@@ -32,7 +32,7 @@ export default function TransactionSync() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.transactions);
 
-  const transactions = chainId ? state[chainId] ?? {} : {};
+  const transactions = chainId && state ? state[chainId] ?? {} : {};
 
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return;

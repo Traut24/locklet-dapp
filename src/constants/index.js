@@ -125,3 +125,4 @@ export const LKT_TOKEN_INFOS = {
 export const LATEST_TOKEN_LOCKS_PAGE_SIZE = 6;
 export const ALL_TOKEN_LOCKS_PAGE_SIZE = 12;
 export const YOUR_TOKEN_LOCKS_PAGE_SIZE = 6;
+export const TOKEN_LOCKS_BY_TOKEN_ADDR_PAGE_SIZE = 12;

@@ -3,6 +3,7 @@ import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
 import { useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Logo from 'src/components/Logo';
 import ClaimTokens from 'src/components/Modals/Tokens/ClaimTokens';
@@ -32,13 +33,15 @@ const TEST_NETWORKS_COLORS = {
 export default function App() {
   const { chainId } = useActiveWeb3React();
 
+  const appNetwork = useSelector((state) => state.app.network);
+
   const isRopsten = useMemo(() => {
-    return chainId == EthChainId.ROPSTEN;
-  }, [chainId]);
+    return chainId == EthChainId.ROPSTEN && appNetwork == 'eth';
+  }, [chainId, appNetwork]);
 
   const isBscTestnet = useMemo(() => {
-    return chainId == BscChainId.TESTNET;
-  });
+    return chainId == BscChainId.TESTNET && appNetwork == 'bsc';
+  }, [chainId, appNetwork]);
 
   return (
     <>
@@ -87,9 +90,11 @@ export default function App() {
             <Route exact path="/home" component={HomePage} />
 
             <Route exact path="/locks" component={LocksListPage} />
+            <Route exact path="/locks/:lockIndex" component={LocksListPage} />
             <Route exact path="/locks/tokens/new" component={NewTokenLockPage} />
 
             <Route exact path="/tokens/:tokenAddress" component={TokenPage} />
+            <Route exact path="/tokens/:tokenAddress/locks/:lockIndex" component={TokenPage} />
 
             <Redirect to="/home" />
           </Switch>

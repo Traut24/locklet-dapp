@@ -6,7 +6,7 @@ import { formatUnits } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers/node_modules/@ethersproject/contracts/node_modules/@ethersproject/bignumber';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
+import { generatePath, Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
@@ -19,11 +19,29 @@ export default function LockDetails() {
   // app state
   const { chainId, library } = useActiveWeb3React();
 
+  const history = useHistory();
+  const location = useLocation();
+
   const tokensMetadata = useTokensMetadata();
 
   // modal state
   const lockDetailsModalOpen = useSelector((state) => state.modals.lockDetails.show);
-  const toggleLockDetailsModal = useToggleModal('lockDetails');
+  const restrictedTokenAddr = useSelector((state) => state.modals.lockDetails.restrictedTokenAddr);
+
+  const onLockDetailsModalClose = () => {
+    const { pathname } = location;
+
+    const locksPageRegExp = /^\/locks\/\d(\/?)$/m;
+    const tokenPageLocksRegExp = /^\/tokens\/.*\/locks\/\d(\/?)$/m;
+
+    if (locksPageRegExp.exec(pathname) !== null) {
+      history.push('/locks')
+    } else if (tokenPageLocksRegExp.exec(pathname) !== null) {
+      history.push(`/tokens/${restrictedTokenAddr}`);
+    }
+  };
+
+  const toggleLockDetailsModal = useToggleModal('lockDetails', onLockDetailsModalClose);
 
   useEffect(() => {
     if (lockDetailsModalOpen) toggleLockDetailsModal(); // close modal if chain change
@@ -36,6 +54,16 @@ export default function LockDetails() {
     return parseFloat(formatUnits(lockIndex, 0));
   }, [lockIndex]);
 
+  // append friendly url
+  useEffect(() => {
+    if (lockIndexAsNumber !== null) {
+      const { pathname } = location;
+
+      if (pathname.startsWith('/locks')) history.push(`/locks/${lockIndexAsNumber}`);
+      else if (pathname.startsWith('/tokens')) history.push(`/tokens/${restrictedTokenAddr}/locks/${lockIndexAsNumber}`)
+    }
+  }, [lockIndexAsNumber])
+
   // token vault management
   const tokenVaultAddr = TOKEN_VAULT[chainId];
   const tokenVault = useTokenVaultContract(tokenVaultAddr);
@@ -45,10 +73,22 @@ export default function LockDetails() {
   const [tokenInfos, setTokenInfos] = useState(null);
 
   const refreshLockDetails = async () => {
-    const _lockDetails = await tokenVault.getLock(lockIndexAsNumber);
-    setLockDetails(_lockDetails);
+    let _lockDetails = null;
+    try {
+      _lockDetails = await tokenVault.getLock(lockIndexAsNumber);
+      setLockDetails(_lockDetails);
+    } catch (err) {
+      console.error(err);
+      toggleLockDetailsModal();
+      return;
+    }
 
     const tokenAddress = _lockDetails.lock.tokenAddress;
+    if (restrictedTokenAddr && restrictedTokenAddr?.toLowerCase() !== tokenAddress?.toLowerCase()) {
+      toggleLockDetailsModal();
+      return;
+    }
+
     const tokenContract = new Contract(tokenAddress, ERC20.abi, library);
 
     const tokenName = await tokenContract.name();
@@ -215,7 +255,14 @@ export default function LockDetails() {
                     Status
                   </Text>
 
-                  <Badge variant="solid" colorScheme={isRevoked ? 'red' : isLocked ? 'green' : 'blackAlpha'} rounded="md" fontSize="0.7em" px="2" verticalAlign="baseline">
+                  <Badge
+                    variant="solid"
+                    colorScheme={isRevoked ? 'red' : isLocked ? 'green' : 'blackAlpha'}
+                    rounded="md"
+                    fontSize="0.7em"
+                    px="2"
+                    verticalAlign="baseline"
+                  >
                     {isRevoked ? 'Revoked' : isLocked ? 'Locked' : 'Unlocked'}
                   </Badge>
                 </Box>
@@ -243,7 +290,7 @@ export default function LockDetails() {
                   </Thead>
                   <Tbody>
                     {lockDetails?.recipients.map((row, index) => (
-                      <Tr>
+                      <Tr key={index}>
                         <Td whiteSpace="nowrap">
                           <Link href={getExplorerLink(chainId, row.recipientAddress, 'address')} color="brand.500" isExternal>
                             {shortenAddress(row.recipientAddress)}

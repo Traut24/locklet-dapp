@@ -5,7 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import reducers from './reducers';
 import sagas from './sagas';
 
-const PERSISTED_KEYS = ['transactions'];
+const PERSISTED_KEYS = ['app', 'transactions'];
 const localStorageMiddleware = save({ states: PERSISTED_KEYS });
 
 const sagaMiddleware = createSagaMiddleware();

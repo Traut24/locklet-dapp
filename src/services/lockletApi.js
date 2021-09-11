@@ -15,3 +15,7 @@ export const getChainsStats = () => {
 export const getTokenLocks = (networkId, pageNumber, pageSize) => {
   return lockletApi.get(`locks/tokens?network=${networkId}&page=${pageNumber}&pageSize=${pageSize}`);
 };
+
+export const getTokenLocksByTokenAddr = (networkId, tokenAddress) => {
+  return lockletApi.get(`locks/tokens/search?network=${networkId}&tokenAddress=${tokenAddress}`);
+};

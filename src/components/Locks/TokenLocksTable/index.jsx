@@ -1,4 +1,4 @@
-import { Badge, Button, ButtonGroup, Center, Circle, CircularProgress, Flex, Heading, HStack, Image, Link, Table, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import { Badge, Button, ButtonGroup, Circle, Flex, HStack, Image, Link, Table, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { formatUnits } from '@ethersproject/units';
 import * as React from 'react';
 import { useEffect } from 'react';

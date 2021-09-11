@@ -1,6 +1,6 @@
 import { Button, HStack, Image } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BscLogo from 'src/assets/images/networks/bsc.png';
 import EthLogo from 'src/assets/images/networks/eth.png';
 import { SET_NETWORK } from 'src/store';
@@ -56,18 +56,24 @@ const options = [
 ];
 
 export default function NetworkSelector() {
+  // app state
   const dispatch = useDispatch();
 
+  const appNetwork = useSelector((state) => state.app.network);
+
+  useEffect(() => {
+    const selectedOption = options.find(x => x.value == appNetwork);
+    setSelectedOption(selectedOption);
+  }, [appNetwork])
+
+  // component state
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState(appNetwork ?? options[0]);
 
   const toggling = () => setIsOpen(!isOpen);
 
   const onOptionClicked = (option) => () => {
-    if (option.value !== selectedOption.value) {
-      setSelectedOption(option);
-      dispatch({ type: SET_NETWORK, network: option.value });
-    }
+    if (option.value !== selectedOption.value) dispatch({ type: SET_NETWORK, network: option.value });
     setIsOpen(false);
   };
 

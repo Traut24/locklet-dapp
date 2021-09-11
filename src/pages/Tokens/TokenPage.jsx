@@ -1,15 +1,15 @@
-import { Box, Circle, Heading, HStack, Image, Link, SimpleGrid, Skeleton, SkeletonCircle } from '@chakra-ui/react';
+import { Box, Circle, Heading, HStack, Image, Link, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { Contract } from '@ethersproject/contracts';
 import ERC20 from 'contracts/ERC20.json';
 import { getAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { FaFileContract } from 'react-icons/fa';
 import { useHistory, useParams } from 'react-router';
-import AllTokenLocks from 'src/components/Locks/AllTokenLocks';
-import YourTokenLocks from 'src/components/Locks/YourTokenLocks';
+import TokenLocksByTokenAddr from 'src/components/Locks/TokenLocksByTokenAddr';
 import TokenChart from 'src/components/Tokens/TokenChart';
 import TokenOverview from 'src/components/Tokens/TokenOverview';
 import { useActiveWeb3React } from 'src/hooks';
+import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
 import { getExplorerLink, isAddress } from 'src/utils';
 
@@ -20,12 +20,18 @@ export default function TokenPage() {
   const tokensMetadata = useTokensMetadata();
 
   // params
-  const { tokenAddress } = useParams();
+  const { tokenAddress, lockIndex } = useParams();
 
   const checksumAddress = useMemo(() => {
     if (isAddress(tokenAddress)) return getAddress(tokenAddress);
     else return false;
   }, [tokenAddress]);
+
+  const toggleLockDetailsModal = useToggleModal('lockDetails');
+
+  useEffect(() => {
+    if (lockIndex > -1) toggleLockDetailsModal({ lockIndex: lockIndex, restrictedTokenAddr: tokenAddress });
+  }, []);
 
   // component state
   const [isLoading, setIsLoading] = useState(true);
@@ -47,9 +53,11 @@ export default function TokenPage() {
     setTokenInfos({ tokenAddress, tokenName, tokenSymbol, tokenDecimals, tokenTotalSupply, tokenLogoUrl });
     setIsLoading(false);
   };
+  
+  const history = useHistory();
 
   useEffect(() => {
-    if (!checksumAddress) history.pushState('/home');
+    if (!checksumAddress) history.push('/home');
     refreshTokenInfos();
   }, [chainId, checksumAddress, tokensMetadata]);
 
@@ -90,7 +98,7 @@ export default function TokenPage() {
             LKT Token Locks
           </Heading>
 
-          <AllTokenLocks />
+          <TokenLocksByTokenAddr tokenAddress={tokenAddress} />
         </Box>
       </Box>
     </Box>

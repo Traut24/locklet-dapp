@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Collapse, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Center, Circle, Collapse, Divider, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Image, Input, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaExclamationTriangle, FaPlusCircle } from 'react-icons/fa';
+import { Link as RouterLink } from 'react-router-dom';
 import DatePicker from 'src/components/DatePicker';
 import AdvancedNumberInputField from 'src/components/Inputs/AdvancedNumberInputField';
 import RecipientInput from 'src/components/Inputs/RecipientInput';
@@ -16,16 +17,20 @@ import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
 import { useTokenContract, useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
-import { daysBetween, isAddress } from 'src/utils';
+import useTokensMetadata from 'src/hooks/useTokensMetadata';
+import { daysBetween, getExplorerLink, isAddress } from 'src/utils';
 
 export default function NewTokenLock() {
   // app state
   const { chainId, account } = useActiveWeb3React();
+
   const addTx = useTransactionAdder();
+
+  const tokensMetadata = useTokensMetadata();
 
   // component state
   const [isSuccess, setIsSuccess] = useState(false);
-
+  
   const [isTokenSelected, setIsTokenSelected] = useState(false);
   const [isTokenErrored, setIsTokenErrored] = useState(false);
   const [selectedTokenData, setSelectedTokenData] = useState(null);
@@ -203,7 +208,12 @@ export default function NewTokenLock() {
     const symbol = await token.symbol();
     const decimals = await token.decimals();
 
-    const tokenData = { name, symbol, decimals };
+    let logoUrl = null;
+
+    const trustWalletInfos = tokensMetadata?.find((x) => x.address?.toLowerCase() == tokenAddr?.toLowerCase());
+    if (trustWalletInfos) logoUrl = trustWalletInfos.logoURI;
+
+    const tokenData = { name, symbol, decimals, logoUrl };
     setSelectedTokenData(tokenData);
   };
 
@@ -275,6 +285,8 @@ export default function NewTokenLock() {
       setIsAllowanceLoading(false);
     }
   };
+  
+  const [lockTxHash, setLockTxHash] = useState(null);
 
   // lock logic
   const lock = async () => {
@@ -301,11 +313,12 @@ export default function NewTokenLock() {
       }
 
       toast.loading('Your transaction is being confirmed...', { id: lockTx.hash });
+      setLockTxHash(lockTx.hash);
       addTx(lockTx);
 
       const lockResult = await lockTx.wait();
       if (lockResult?.status === 1) {
-        // TODO: ...
+        setIsSuccess(true);
       }
     } catch (err) {
       console.error(err);
@@ -363,6 +376,11 @@ export default function NewTokenLock() {
                   <>
                     <Alert status="success" variant="top-accent" rounded="md" mb="5">
                       <AlertIcon />
+                      {selectedTokenData?.logoUrl && (
+                        <Circle rounded="full" border="2px" borderColor="green.500" borderRadius="md" bg="green.500" size="6" mr="2">
+                          <Image src={selectedTokenData.logoUrl} />
+                        </Circle>
+                      )}
                       {selectedTokenData.name} (<b>{selectedTokenData.symbol}</b>) — {selectedTokenData.decimals} Decimals
                     </Alert>
 
@@ -591,7 +609,7 @@ export default function NewTokenLock() {
             <Fade in={isSuccess}>
               <Alert
                 status="success"
-                variant="subtle"
+                variant="top-accent"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
@@ -605,13 +623,18 @@ export default function NewTokenLock() {
                 </AlertTitle>
                 <AlertDescription maxWidth="sm" alignItems="center" textAlign="center" alignSelf="center">
                   <Text>Your lock has been created successfully.</Text>
-                  <Link href="#" color="brand.800" isExternal>
-                    View on Explorer
-                  </Link>
-                  {' — '}
-                  <Link href="#" color="brand.800" isExternal>
-                    Your Locks
-                  </Link>
+
+                  <Divider borderColor="green.500" my="2" />
+
+                  <Center>
+                    <Link as={RouterLink} to="/locks" color="brand.500" mr="2">
+                      Your Token Locks
+                    </Link>
+                    {' — '}
+                    <Link href={getExplorerLink(chainId, lockTxHash, 'transaction')} color="brand.500" isExternal ml="2">
+                      View on Explorer
+                    </Link>
+                  </Center>
                 </AlertDescription>
               </Alert>
             </Fade>
