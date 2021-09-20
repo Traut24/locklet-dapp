@@ -2,11 +2,10 @@ import { Alert, AlertDescription, AlertIcon, AlertTitle, Badge, Box, Button, Cen
 import { Contract } from '@ethersproject/contracts';
 import ERC20 from 'contracts/ERC20.json';
 import { addDays } from 'date-fns/esm';
-import { formatUnits } from 'ethers/lib/utils';
-import { BigNumber } from 'ethers/node_modules/@ethersproject/contracts/node_modules/@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { generatePath, Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
@@ -14,6 +13,7 @@ import { useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
 import { formatDate, getExplorerLink, shortenAddress } from 'src/utils';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export default function LockDetails() {
   // app state

@@ -1,7 +1,7 @@
 import { Button, Flex, HStack } from '@chakra-ui/react';
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -22,8 +22,13 @@ import HomePage from 'src/pages/Home/HomePage';
 import LocksListPage from 'src/pages/Locks/LocksListPage';
 import NewTokenLockPage from 'src/pages/Locks/NewTokenLockPage';
 import TokenPage from 'src/pages/Tokens/TokenPage';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { NavMenu } from './Navigation/NavMenu';
+import { useDispatch } from 'react-redux';
+import { SET_NETWORK } from 'src/store';
+import { NETWORK_VALUES } from 'src/components/NetworkSelector';
 
 const TEST_NETWORKS_COLORS = {
   [EthChainId.ROPSTEN]: 'pink.400',
@@ -31,10 +36,12 @@ const TEST_NETWORKS_COLORS = {
 };
 
 export default function App() {
+  // app state
   const { chainId } = useActiveWeb3React();
 
   const appNetwork = useSelector((state) => state.app.network);
 
+  // component state
   const isRopsten = useMemo(() => {
     return chainId == EthChainId.ROPSTEN && appNetwork == 'eth';
   }, [chainId, appNetwork]);
@@ -42,6 +49,21 @@ export default function App() {
   const isBscTestnet = useMemo(() => {
     return chainId == BscChainId.TESTNET && appNetwork == 'bsc';
   }, [chainId, appNetwork]);
+
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    const { search } = location;
+    const query = queryString.parse(search);
+
+    const network = query?.network;
+
+    if (network && NETWORK_VALUES.includes(network)) {
+      dispatch({ type: SET_NETWORK, network: network });
+    }
+  }, [])
+
 
   return (
     <>

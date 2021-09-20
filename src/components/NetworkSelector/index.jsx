@@ -40,15 +40,18 @@ const ListItem = styled('li')`
   cursor: pointer;
 `;
 
+export const NETWORK_VALUES = ['eth', 'bsc'];
+export const NETWORK_LABELS = ['Ethereum', 'Binance Smart Chain']
+
 const options = [
   {
-    value: 'eth',
-    label: 'Ethereum',
+    value: NETWORK_VALUES[0],
+    label: NETWORK_LABELS[0],
     icon: EthLogo,
     bgColor: '#bac1ff',
   },
   {
-    value: 'bsc',
+    value: NETWORK_VALUES[1],
     label: 'Binance Smart Chain',
     icon: BscLogo,
     bgColor: 'orange.100',

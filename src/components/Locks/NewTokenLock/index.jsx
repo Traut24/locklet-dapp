@@ -307,7 +307,7 @@ export default function NewTokenLock() {
 
         case 'Linearly':
           const lCliffInDays = daysBetween(todayDate, lStartDate);
-          const durationInDays = daysBetween(lStartDate, lEndDate);
+          const durationInDays = daysBetween(lStartDate, lEndDate) + 1;
           lockTx = await tokenVault.addLock(tokenAddr, totalLockAmountAsBN, lCliffInDays, durationInDays, lockRecipients, revocable, payFeeWithLKT);
           break;
       }

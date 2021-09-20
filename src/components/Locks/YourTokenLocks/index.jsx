@@ -6,7 +6,7 @@ import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
-import { FaBan, FaCoins } from 'react-icons/fa';
+import { FaBan, FaCoins, FaExpandAlt, FaEye, FaInfoCircle, FaLayerGroup, FaList, FaReceipt, FaRegEye } from 'react-icons/fa';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
@@ -26,6 +26,7 @@ export default function YourTokenLocks() {
   const toggleRevokeLockModal = useToggleModal('revokeLock');
   const toggleClaimTokensModal = useToggleModal('claimTokens');
   const togglePullRefundModal = useToggleModal('pullRefund');
+  const toggleLockDetailsModal = useToggleModal('lockDetails');
 
   // component state
   const tokenVaultAddr = TOKEN_VAULT[chainId];
@@ -204,7 +205,11 @@ export default function YourTokenLocks() {
             <Tbody>
               {paggedTokenLocks.map((row, index) => (
                 <Tr key={index}>
-                  <Td whiteSpace="nowrap">{row?.idAsNumber}</Td>
+                  <Td whiteSpace="nowrap">
+                    <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id })}>
+                      {row?.idAsNumber}
+                    </Button>
+                  </Td>
                   <Td whiteSpace="nowrap">
                     {row?.isInitiator ? (
                       <Badge variant="solid" colorScheme="blue" rounded="md" fontSize="0.7em" px="2" mr="2">
@@ -229,9 +234,9 @@ export default function YourTokenLocks() {
                     <Menu>
                       <MenuButton as={IconButton} aria-label="Options" icon={<SettingsIcon />} variant="outline"
                         bgColor={row.isInitiator ? "blue.500" : "pink.500"}
-                          _hover={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
-                            _active={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
-                              color="white"
+                        _hover={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
+                        _active={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
+                        color="white"
                       />
                       <MenuList>
                         {row.isInitiator ? (
@@ -254,7 +259,6 @@ export default function YourTokenLocks() {
                           onClick={() => togglePullRefundModal({ tokenAddress: row.tokenAddress, refundAmount: formatUnits(row.tokenRefundAmount, row.tokenDecimals), onSuccess: onPullRefundSuccess })}>
                           Pull Refund
                         </MenuItem>
-                        <MenuItem icon={<LinkIcon size="14px" />}>See details</MenuItem>
                       </MenuList>
                     </Menu>
                   </Td>
