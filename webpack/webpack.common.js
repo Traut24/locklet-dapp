@@ -24,8 +24,6 @@ module.exports = () => {
       return prev;
     }, {});
   }
-  
-  return;
 
   return {
     entry: commonPaths.entryPath,
