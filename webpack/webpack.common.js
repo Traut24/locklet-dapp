@@ -10,12 +10,16 @@ const dotenv = require('dotenv');
 
 module.exports = () => {
   const mode = process.env.NODE_ENV;
-  const env = dotenv.config({ path: `.env.${mode}` }).parsed;
+  
+  let envKeys = [];
+  if (mode !== 'production') {
+    const env = dotenv.config({ path: `.env.${mode}` }).parsed;
 
-  const envKeys = Object.keys(env).reduce((prev, next) => {
-    prev[`process.env.${next}`] = JSON.stringify(env[next]);
-    return prev;
-  }, {});
+    envKeys = Object.keys(env).reduce((prev, next) => {
+      prev[`process.env.${next}`] = JSON.stringify(env[next]);
+      return prev;
+    }, {});
+  }
 
   return {
     entry: commonPaths.entryPath,
@@ -52,7 +56,7 @@ module.exports = () => {
               },
             },
           ],
-        }
+        },
       ],
     },
     serve: {
@@ -77,7 +81,7 @@ module.exports = () => {
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
       new webpack.ProvidePlugin({
-        "React": "react",
+        React: 'react',
       }),
       new HtmlWebpackPlugin({
         favicon: commonPaths.faviconPath,
