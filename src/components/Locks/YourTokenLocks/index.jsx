@@ -1,5 +1,30 @@
 import { ArrowForwardIcon, SettingsIcon } from '@chakra-ui/icons';
-import { Alert, AlertIcon, Badge, Box, Button, ButtonGroup, Center, CircularProgress, Flex, Heading, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertIcon,
+  Badge,
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  CircularProgress,
+  AlertDescription,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
@@ -86,8 +111,8 @@ export default function YourTokenLocks() {
   };
 
   useEffect(() => {
-    refreshTokenLocks();
-  }, [chainId]);
+    if (account) refreshTokenLocks();
+  }, [chainId, account]);
 
   const totalDistinctTokenLocks = useMemo(() => {
     return [...new Set(tokenLocks.map((x) => x.idAsNumber))]?.length;
@@ -172,16 +197,23 @@ export default function YourTokenLocks() {
 
   return (
     <Box mx="auto" py="4" px="4" rounded="lg" bg="white" shadow="base" overflowX="auto">
-      {isLoading && <TextLoader />}
-
-      {!isLoading && (!paggedTokenLocks || paggedTokenLocks?.length == 0) && (
-        <Alert status="warning" mb="2" rounded="md">
+      {!account && (
+        <Alert status="info" mb="2" rounded="md">
           <AlertIcon />
-          You have not created any locks and no locks have been intended for you.
+          <AlertDescription>Connect to a wallet to see your locks.</AlertDescription>
         </Alert>
       )}
 
-      {!isLoading && (
+      {account && isLoading && <TextLoader />}
+
+      {account && !isLoading && (!paggedTokenLocks || paggedTokenLocks?.length == 0) && (
+        <Alert status="warning" mb="2" rounded="md">
+          <AlertIcon />
+          <AlertDescription>You have not created any locks and no locks have been intended for you.</AlertDescription>
+        </Alert>
+      )}
+
+      {(!account || !isLoading) && (
         <>
           <Table variant="simple" fontSize="md">
             <Thead>
