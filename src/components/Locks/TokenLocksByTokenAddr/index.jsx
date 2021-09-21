@@ -1,5 +1,8 @@
-import { Box, Button, ButtonGroup, Flex, HStack, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Flex, HStack, Spacer, Stack, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_LOCKS_BY_TOKEN_ADDR_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
@@ -23,6 +26,8 @@ export default function TokenLocksByTokenAddr(props) {
 function TokenLocksInternalTable(props) {
   // app state
   const { chainId } = useActiveWeb3React();
+
+  const appNetwork = useSelector((state) => state.app.network);
 
   const toggleLockDetailsModal = useToggleModal('lockDetails');
 
@@ -96,6 +101,15 @@ function TokenLocksInternalTable(props) {
         <TextLoader />
       ) : (
         <>
+          <Stack spacing="4" direction={{ base: 'column', md: 'row' }} justify="flex-start" pb="3">
+            <Spacer />
+            <ButtonGroup size="sm" variant="outline">
+              <Button as={RouterLink} to={`/${appNetwork}/locks/tokens/new`} iconSpacing="1" leftIcon={<FaPlus />}>
+                New Token Lock
+              </Button>
+            </ButtonGroup>
+          </Stack>
+
           <Table variant="simple" fontSize="md">
             <Thead>
               <Tr>

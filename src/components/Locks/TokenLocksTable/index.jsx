@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
+import { FaExpand, FaExpandAlt } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
@@ -95,8 +96,15 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
       const isLocked = startDate > currentDate;
       const isRevoked = data?.isRevoked;
       return (
-        <Badge variant="solid" colorScheme={isRevoked ? 'red' : (isLocked ? 'green' : 'blackAlpha')} rounded="md" fontSize="0.7em" px="2" verticalAlign="baseline">
-          {isRevoked ? 'Revoked' : (isLocked ? 'Locked' : 'Unlocked')}
+        <Badge
+          variant="solid"
+          colorScheme={isRevoked ? 'red' : isLocked ? 'green' : 'blackAlpha'}
+          rounded="md"
+          fontSize="0.7em"
+          px="2"
+          verticalAlign="baseline"
+        >
+          {isRevoked ? 'Revoked' : isLocked ? 'Locked' : 'Unlocked'}
         </Badge>
       );
     },
@@ -201,7 +209,7 @@ export default function TokenLocksTable(props) {
                   })}
                   <Td textAlign="right">
                     <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id })}>
-                      See details
+                      <FaExpand style={{ position: 'relative', top: '1px', marginRight: '6px' }} /> See details
                     </Button>
                   </Td>
                 </Tr>

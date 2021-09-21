@@ -13,19 +13,6 @@ export default function AllTokenLocks() {
     <>
       <Box mx="auto" py="4" px="4" rounded="lg" bg="white" shadow="base" overflowX="auto">
         <Stack spacing="4" direction={{ base: 'column', md: 'row' }} justify="flex-start" pb="3">
-          {/*
-          <HStack flexGrow="1">
-            <FormControl id="search">
-              <InputGroup size="sm">
-                <FormLabel srOnly>Filter by token name or address...</FormLabel>
-                <InputLeftElement pointerEvents="none" color="gray.400">
-                  <BsSearch />
-                </InputLeftElement>
-                <Input rounded="base" type="search" placeholder="Filter by token name or address..." />
-              </InputGroup>
-            </FormControl>
-          </HStack>
-          */}
           <Spacer />
           <ButtonGroup size="sm" variant="outline">
             <Button as={RouterLink} to={`/${appNetwork}/locks/tokens/new`} iconSpacing="1" leftIcon={<FaPlus />}>

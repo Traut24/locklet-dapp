@@ -6,7 +6,7 @@ import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
-import { FaBan, FaCoins, FaExpandAlt, FaEye, FaInfoCircle, FaLayerGroup, FaList, FaReceipt, FaRegEye } from 'react-icons/fa';
+import { FaBan, FaCoins, FaExpand, FaExpandAlt, FaEye, FaHashtag, FaInfoCircle, FaLayerGroup, FaList, FaReceipt, FaRegEye } from 'react-icons/fa';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
@@ -67,7 +67,7 @@ export default function YourTokenLocks() {
         if (!x.isInitiator) {
           try {
             claimAmount = (await tokenVault.getClaimByLockAndRecipient(x.id, account))[1] ?? BigNumber.from(0);
-          } catch (err) { }
+          } catch (err) {}
         }
 
         return {
@@ -172,9 +172,7 @@ export default function YourTokenLocks() {
 
   return (
     <Box mx="auto" py="4" px="4" rounded="lg" bg="white" shadow="base" overflowX="auto">
-      {isLoading && (
-        <TextLoader />
-      )}
+      {isLoading && <TextLoader />}
 
       {!isLoading && (!paggedTokenLocks || paggedTokenLocks?.length == 0) && (
         <Alert status="warning" mb="2" rounded="md">
@@ -207,7 +205,7 @@ export default function YourTokenLocks() {
                 <Tr key={index}>
                   <Td whiteSpace="nowrap">
                     <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id })}>
-                      {row?.idAsNumber}
+                      <FaExpand style={{ position: 'relative', top: '1px', marginRight: '6px' }} /> #{row?.idAsNumber}
                     </Button>
                   </Td>
                   <Td whiteSpace="nowrap">
@@ -232,10 +230,14 @@ export default function YourTokenLocks() {
                   })}
                   <Td textAlign="right">
                     <Menu>
-                      <MenuButton as={IconButton} aria-label="Options" icon={<SettingsIcon />} variant="outline"
-                        bgColor={row.isInitiator ? "blue.500" : "pink.500"}
-                        _hover={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
-                        _active={{ bgColor: row.isInitiator ? "blue.600" : "pink.600" }}
+                      <MenuButton
+                        as={IconButton}
+                        aria-label="Options"
+                        icon={<SettingsIcon />}
+                        variant="outline"
+                        bgColor={row.isInitiator ? 'blue.500' : 'pink.500'}
+                        _hover={{ bgColor: row.isInitiator ? 'blue.600' : 'pink.600' }}
+                        _active={{ bgColor: row.isInitiator ? 'blue.600' : 'pink.600' }}
                         color="white"
                       />
                       <MenuList>
@@ -248,15 +250,31 @@ export default function YourTokenLocks() {
                             Revoke Lock
                           </MenuItem>
                         ) : (
-                          <MenuItem icon={<FaCoins />}
+                          <MenuItem
+                            icon={<FaCoins />}
                             isDisabled={row.isRevoked}
-                            onClick={() => toggleClaimTokensModal({ lockIndex: row.idAsNumber, claimAmount: formatUnits(row.claimAmount, row.tokenDecimals), onSuccess: onClaimSuccess })}>
+                            onClick={() =>
+                              toggleClaimTokensModal({
+                                lockIndex: row.idAsNumber,
+                                claimAmount: formatUnits(row.claimAmount, row.tokenDecimals),
+                                onSuccess: onClaimSuccess,
+                              })
+                            }
+                          >
                             Claim Tokens
                           </MenuItem>
                         )}
-                        <MenuItem icon={<ArrowForwardIcon />}
+                        <MenuItem
+                          icon={<ArrowForwardIcon />}
                           isDisabled={!row.tokenRefundAmount || row.tokenRefundAmount.lte(BigNumber.from(0))}
-                          onClick={() => togglePullRefundModal({ tokenAddress: row.tokenAddress, refundAmount: formatUnits(row.tokenRefundAmount, row.tokenDecimals), onSuccess: onPullRefundSuccess })}>
+                          onClick={() =>
+                            togglePullRefundModal({
+                              tokenAddress: row.tokenAddress,
+                              refundAmount: formatUnits(row.tokenRefundAmount, row.tokenDecimals),
+                              onSuccess: onPullRefundSuccess,
+                            })
+                          }
+                        >
                           Pull Refund
                         </MenuItem>
                       </MenuList>

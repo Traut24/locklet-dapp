@@ -1,13 +1,16 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Center, Circle, Collapse, Divider, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Image, Input, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
+import { CheckIcon, CloseIcon, SpinnerIcon, WarningIcon } from '@chakra-ui/icons';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Center, Circle, CircularProgress, Collapse, Divider, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
+import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import capitalize from 'capitalize-sentence';
+import ERC20 from 'contracts/ERC20.json';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { FaExclamationTriangle, FaPlusCircle } from 'react-icons/fa';
+import { FaExclamationTriangle, FaFileContract, FaPlusCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import DatePicker from 'src/components/DatePicker';
@@ -23,9 +26,9 @@ import { daysBetween, getExplorerLink, isAddress } from 'src/utils';
 
 export default function NewTokenLock() {
   // app state
-  const { chainId, account } = useActiveWeb3React();
+  const { chainId, account, library } = useActiveWeb3React();
 
-  const appNetwork = useSelector((state) => state.app.network); 
+  const appNetwork = useSelector((state) => state.app.network);
 
   const addTx = useTransactionAdder();
 
@@ -33,7 +36,7 @@ export default function NewTokenLock() {
 
   // component state
   const [isSuccess, setIsSuccess] = useState(false);
-  
+
   const [isTokenSelected, setIsTokenSelected] = useState(false);
   const [isTokenErrored, setIsTokenErrored] = useState(false);
   const [selectedTokenData, setSelectedTokenData] = useState(null);
@@ -204,7 +207,30 @@ export default function NewTokenLock() {
   const toggleWalletModal = useToggleModal('walletManager');
 
   // token management
-  const token = useTokenContract(tokenAddr);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    setIsTokenSelected(false);
+    setIsTokenErrored(false);
+
+    setToken(null);
+    setSelectedTokenData(null);
+
+    setSelectedTokenAllowanceAsBN(BigNumber.from(0));
+    setTokenBalanceAsBN(BigNumber.from(0));
+    
+    if (tokenAddr?.length == 42) {
+      setIsTokenSelected(true);
+
+      try {
+        const _token = new Contract(tokenAddr, ERC20.abi, library);
+        setToken(_token);
+      } catch (err) {
+        console.error(err);
+        setIsTokenErrored(true);
+      }
+    }
+  }, [tokenAddr]);
 
   const refreshTokenData = async () => {
     const name = await token.name();
@@ -231,29 +257,22 @@ export default function NewTokenLock() {
   };
 
   useEffect(() => {
-    setSelectedTokenData(null);
-    setSelectedTokenAllowanceAsBN(BigNumber.from(0));
-    setTokenBalanceAsBN(BigNumber.from(0));
-    setIsTokenErrored(false);
+    if (!token) return;
 
-    if (tokenAddr?.length == 42 && token) {
-      (async () => {
-        try {
-          await refreshTokenData();
+    (async () => {
+      try {
+        await refreshTokenData();
 
-          if (account) {
-            refreshTokenBalance();
-            refreshTokenAllowance();
-          }
-
-          setIsTokenSelected(true);
-        } catch (err) {
-          setIsTokenErrored(true);
-          console.error(err);
+        if (account) {
+          refreshTokenBalance();
+          refreshTokenAllowance();
         }
-      })();
-    }
-  }, [token, tokenAddr, isTokenSelected]);
+      } catch (err) {
+        setIsTokenErrored(true);
+        console.error(err);
+      }
+    })();
+  }, [token, account]);
 
   useEffect(() => {
     if (account && selectedTokenData) refreshTokenBalance(selectedTokenData.decimals);
@@ -265,7 +284,7 @@ export default function NewTokenLock() {
       setIsAllowanceLoading(true);
 
       if (needToApproveLkt) {
-        const approveLktTx = await lktToken.approve(tokenVault.address, MaxUint256);
+        const approveLktTx = await lktToken.approve(tokenVault.address, MaxUint256, { from: account });
 
         toast.loading('Your transaction is being confirmed...', { id: approveLktTx.hash });
         addTx(approveLktTx);
@@ -288,7 +307,7 @@ export default function NewTokenLock() {
       setIsAllowanceLoading(false);
     }
   };
-  
+
   const [lockTxHash, setLockTxHash] = useState(null);
 
   // lock logic
@@ -311,14 +330,9 @@ export default function NewTokenLock() {
         case 'Linearly':
           const lCliffInDays = daysBetween(todayDate, lStartDate);
           const durationInDays = daysBetween(lStartDate, lEndDate);
-          console.log('lCliffInDays', lCliffInDays);
-          console.log('durationInDays', durationInDays)
-          
-
           lockTx = await tokenVault.addLock(tokenAddr, totalLockAmountAsBN, lCliffInDays, durationInDays, lockRecipients, revocable, payFeeWithLKT);
           break;
       }
-
 
       toast.loading('Your transaction is being confirmed...', { id: lockTx.hash });
       setLockTxHash(lockTx.hash);
@@ -358,15 +372,28 @@ export default function NewTokenLock() {
                 </Text>
               </Box>
 
-              <form>
+              <Box>
                 <Stack direction={{ base: 'column' }} spacing="2" mb="3">
                   <FormControl>
                     <FormLabel>Token address</FormLabel>
                     <FormHelperText mb="2">Enter the token address</FormHelperText>
-                    <Input type="text" onChange={onTokenAddrChange} placeholder="0xd9b89eee86b15634c70cab51baf85615a4ab91a1" />
+
+                    <InputGroup>
+                      <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children={<FaFileContract />} />
+                      <Input type="text" onChange={onTokenAddrChange} placeholder="0xd9b89eee86b15634c70cab51baf85615a4ab91a1" />
+                      <InputRightElement
+                        children={
+                          <>
+                            {selectedTokenData && isTokenSelected && !isTokenErrored && <CheckIcon color="brand.500" />}
+                            {!selectedTokenData && isTokenSelected && !isTokenErrored && <CircularProgress size="18px" color="brand.500" isIndeterminate />}
+                            {!selectedTokenData && isTokenSelected && isTokenErrored && <WarningIcon color="red.500" />}
+                          </>
+                        }
+                      />
+                    </InputGroup>
                   </FormControl>
                 </Stack>
-              </form>
+              </Box>
 
               <Collapse in={isTokenErrored} animateOpacity>
                 <Alert status="error" rounded="md" mb="5">
@@ -601,7 +628,7 @@ export default function NewTokenLock() {
                             </Flex>
                           ) : (
                             <Flex>
-                              <Button colorScheme="brand" size="lg" flex="1" mr="1" onClick={toggleWalletModal}>
+                              <Button colorScheme="brand" size="lg" flex="1" mr="1" onClick={() => toggleWalletModal()}>
                                 Connect to a wallet
                               </Button>
                             </Flex>
