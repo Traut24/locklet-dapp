@@ -10,16 +10,22 @@ const dotenv = require('dotenv');
 
 module.exports = () => {
   const mode = process.env.NODE_ENV;
-  
-  let envKeys = [];
-  if (mode !== 'production') {
-    const env = dotenv.config({ path: `.env.${mode}` }).parsed;
 
+  let envKeys = [];
+  if (mode === 'production') {
+    envKeys = Object.keys(process.env).reduce((prev, next) => {
+      if (next.startsWith('REACT_APP')) prev[`process.env.${next}`] = JSON.stringify(process.env[next]);
+      return prev;
+    }, {});
+  } else {
+    const env = dotenv.config({ path: `.env.${mode}` }).parsed;
     envKeys = Object.keys(env).reduce((prev, next) => {
       prev[`process.env.${next}`] = JSON.stringify(env[next]);
       return prev;
     }, {});
   }
+  
+  return;
 
   return {
     entry: commonPaths.entryPath,
