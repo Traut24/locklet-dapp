@@ -21,3 +21,6 @@ yarn.lock*
 # Editor/IDE
 .vscode
 packages/api/etc/
+
+# dotenv environment variables file
+.env.*
