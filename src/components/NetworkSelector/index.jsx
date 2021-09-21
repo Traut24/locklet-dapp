@@ -6,6 +6,8 @@ import EthLogo from 'src/assets/images/networks/eth.png';
 import { SET_NETWORK } from 'src/store';
 import styled from 'styled-components';
 
+import { NETWORK_VALUES } from '../NetworkManager';
+
 const DropDownContainer = styled('div')`
   margin: 0 auto;
   transition: all 10s ease;
@@ -40,13 +42,10 @@ const ListItem = styled('li')`
   cursor: pointer;
 `;
 
-export const NETWORK_VALUES = ['eth', 'bsc'];
-export const NETWORK_LABELS = ['Ethereum', 'Binance Smart Chain']
-
 const options = [
   {
     value: NETWORK_VALUES[0],
-    label: NETWORK_LABELS[0],
+    label: 'Ethereum',
     icon: EthLogo,
     bgColor: '#bac1ff',
   },

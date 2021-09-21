@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { network } from 'src/connectors';
 
 const lockletApi = axios.create({
   baseURL: 'https://func.locklet.finance/api/',
@@ -18,4 +19,8 @@ export const getTokenLocks = (networkId, pageNumber, pageSize) => {
 
 export const getTokenLocksByTokenAddr = (networkId, tokenAddress) => {
   return lockletApi.get(`locks/tokens/search?network=${networkId}&tokenAddress=${tokenAddress}`);
+};
+
+export const getTokenLockTxHash = (networkId, lockIndex) => {
+  return lockletApi.get(`locks/tokens/tx-hash?network=${networkId}&lock=${lockIndex}`);
 };

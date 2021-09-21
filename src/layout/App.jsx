@@ -1,7 +1,7 @@
 import { Button, Flex, HStack } from '@chakra-ui/react';
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -11,6 +11,7 @@ import LockDetails from 'src/components/Modals/Tokens/LockDetails';
 import PullRefund from 'src/components/Modals/Tokens/PullRefund';
 import RevokeLock from 'src/components/Modals/Tokens/RevokeLock';
 import WalletManager from 'src/components/Modals/WalletManager';
+import NetworkManager from 'src/components/NetworkManager';
 import NetworkSelector from 'src/components/NetworkSelector';
 import BlockSync from 'src/components/Synchronizers/BlockSync';
 import MetaDataSync from 'src/components/Synchronizers/MetaDataSync';
@@ -22,13 +23,8 @@ import HomePage from 'src/pages/Home/HomePage';
 import LocksListPage from 'src/pages/Locks/LocksListPage';
 import NewTokenLockPage from 'src/pages/Locks/NewTokenLockPage';
 import TokenPage from 'src/pages/Tokens/TokenPage';
-import { useLocation } from 'react-router-dom';
-import queryString from 'query-string';
 
 import { NavMenu } from './Navigation/NavMenu';
-import { useDispatch } from 'react-redux';
-import { SET_NETWORK } from 'src/store';
-import { NETWORK_VALUES } from 'src/components/NetworkSelector';
 
 const TEST_NETWORKS_COLORS = {
   [EthChainId.ROPSTEN]: 'pink.400',
@@ -49,21 +45,6 @@ export default function App() {
   const isBscTestnet = useMemo(() => {
     return chainId == BscChainId.TESTNET && appNetwork == 'bsc';
   }, [chainId, appNetwork]);
-
-  const dispatch = useDispatch();
-  const location = useLocation();
-
-  useEffect(() => {
-    const { search } = location;
-    const query = queryString.parse(search);
-
-    const network = query?.network;
-
-    if (network && NETWORK_VALUES.includes(network)) {
-      dispatch({ type: SET_NETWORK, network: network });
-    }
-  }, [])
-
 
   return (
     <>
@@ -108,17 +89,18 @@ export default function App() {
 
           {/* Routes */}
           <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/home" component={HomePage} />
+            <Route path={["/:network"]}>
+              <NetworkManager />
 
-            <Route exact path="/locks" component={LocksListPage} />
-            <Route exact path="/locks/:lockIndex" component={LocksListPage} />
-            <Route exact path="/locks/tokens/new" component={NewTokenLockPage} />
+              <Route exact path="/:network" component={HomePage} />
 
-            <Route exact path="/tokens/:tokenAddress" component={TokenPage} />
-            <Route exact path="/tokens/:tokenAddress/locks/:lockIndex" component={TokenPage} />
+              <Route exact path="/:network/locks/:lockIndex?" component={LocksListPage} />
+              <Route exact path="/:network/locks/tokens/new" component={NewTokenLockPage} />
 
-            <Redirect to="/home" />
+              <Route exact path="/:network/tokens/:tokenAddress/:lockIndex?" component={TokenPage} />
+            </Route>
+
+            <Redirect to="/eth" />
           </Switch>
         </Web3ReactManager>
 

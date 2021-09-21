@@ -128,7 +128,7 @@ export default function YourTokenLocks() {
   }, [tokenLocks, tokensInfos]);
 
   useEffect(() => {
-    refreshTokensInfos();
+    if (tokensMetadata !== undefined) refreshTokensInfos();
   }, [tokenLocks, tokensMetadata]);
 
   // callbacks

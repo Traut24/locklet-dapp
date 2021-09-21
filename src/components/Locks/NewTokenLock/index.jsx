@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaExclamationTriangle, FaPlusCircle } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import DatePicker from 'src/components/DatePicker';
 import AdvancedNumberInputField from 'src/components/Inputs/AdvancedNumberInputField';
@@ -23,6 +24,8 @@ import { daysBetween, getExplorerLink, isAddress } from 'src/utils';
 export default function NewTokenLock() {
   // app state
   const { chainId, account } = useActiveWeb3React();
+
+  const appNetwork = useSelector((state) => state.app.network); 
 
   const addTx = useTransactionAdder();
 
@@ -195,8 +198,8 @@ export default function NewTokenLock() {
 
   useEffect(() => {
     refreshTokenVaultFees();
-    refreshLktAllowance();
-  }, [chainId]);
+    if (account) refreshLktAllowance();
+  }, [chainId, account]);
 
   const toggleWalletModal = useToggleModal('walletManager');
 
@@ -307,10 +310,15 @@ export default function NewTokenLock() {
 
         case 'Linearly':
           const lCliffInDays = daysBetween(todayDate, lStartDate);
-          const durationInDays = daysBetween(lStartDate, lEndDate) + 1;
+          const durationInDays = daysBetween(lStartDate, lEndDate);
+          console.log('lCliffInDays', lCliffInDays);
+          console.log('durationInDays', durationInDays)
+          
+
           lockTx = await tokenVault.addLock(tokenAddr, totalLockAmountAsBN, lCliffInDays, durationInDays, lockRecipients, revocable, payFeeWithLKT);
           break;
       }
+
 
       toast.loading('Your transaction is being confirmed...', { id: lockTx.hash });
       setLockTxHash(lockTx.hash);
@@ -627,7 +635,7 @@ export default function NewTokenLock() {
                   <Divider borderColor="green.500" my="2" />
 
                   <Center>
-                    <Link as={RouterLink} to="/locks" color="brand.500" mr="2">
+                    <Link as={RouterLink} to={`/${appNetwork}/locks`} color="brand.500" mr="2">
                       Your Token Locks
                     </Link>
                     {' — '}

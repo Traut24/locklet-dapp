@@ -4,6 +4,7 @@ import ERC20 from 'contracts/ERC20.json';
 import { getAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { FaFileContract } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import TokenLocksByTokenAddr from 'src/components/Locks/TokenLocksByTokenAddr';
 import TokenChart from 'src/components/Tokens/TokenChart';
@@ -16,6 +17,8 @@ import { getExplorerLink, isAddress } from 'src/utils';
 export default function TokenPage() {
   // app state
   const { chainId, library } = useActiveWeb3React();
+
+  const appNetwork = useSelector((state) => state.app.network);
 
   const tokensMetadata = useTokensMetadata();
 
@@ -57,8 +60,8 @@ export default function TokenPage() {
   const history = useHistory();
 
   useEffect(() => {
-    if (!checksumAddress) history.push('/home');
-    refreshTokenInfos();
+    if (!checksumAddress) history.push(`/${appNetwork}`);
+    if (tokensMetadata !== undefined) refreshTokenInfos();
   }, [chainId, checksumAddress, tokensMetadata]);
 
   return (
@@ -95,7 +98,7 @@ export default function TokenPage() {
       <Box maxW={{ base: 'xl', md: '7xl' }} mx="auto" px={{ base: '6', md: '8' }} pb="6">
         <Box overflowX="auto">
           <Heading fontWeight="semibold" size="lg" mb="4">
-            LKT Token Locks
+            {tokenInfos?.tokenSymbol} Token Locks
           </Heading>
 
           <TokenLocksByTokenAddr tokenAddress={tokenAddress} />

@@ -1,9 +1,11 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Badge, Box, Button, Center, Circle, CircularProgress, Heading, HStack, Image, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Badge, Box, Button, Center, Circle, CircularProgress, Heading, HStack, Image, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Table, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
+import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
 import { addDays } from 'date-fns/esm';
-import { formatUnits } from '@ethersproject/units';
 import { useEffect, useMemo, useState } from 'react';
+import { FaReceipt } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
@@ -12,12 +14,14 @@ import { useActiveWeb3React } from 'src/hooks';
 import { useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
-import { formatDate, getExplorerLink, shortenAddress } from 'src/utils';
-import { BigNumber } from '@ethersproject/bignumber';
+import { getTokenLockTxHash } from 'src/services/lockletApi';
+import { formatDate, formatTime, getExplorerLink, shortenAddress, shortenTxHash } from 'src/utils';
 
 export default function LockDetails() {
   // app state
   const { chainId, library } = useActiveWeb3React();
+
+  const appNetwork = useSelector((state) => state.app.network);
 
   const history = useHistory();
   const location = useLocation();
@@ -31,13 +35,13 @@ export default function LockDetails() {
   const onLockDetailsModalClose = () => {
     const { pathname } = location;
 
-    const locksPageRegExp = /^\/locks\/\d(\/?)$/m;
-    const tokenPageLocksRegExp = /^\/tokens\/.*\/locks\/\d(\/?)$/m;
+    const locksPageRegExp = /^\/\w+\/locks\/\d(\/?)$/m;
+    const tokenPageLocksRegExp = /^\/\w+\/tokens\/.*\/\d(\/?)$/m;
 
     if (locksPageRegExp.exec(pathname) !== null) {
-      history.push('/locks')
+      history.push(`/${appNetwork}/locks`);
     } else if (tokenPageLocksRegExp.exec(pathname) !== null) {
-      history.push(`/tokens/${restrictedTokenAddr}`);
+      history.push(`/${appNetwork}/tokens/${restrictedTokenAddr}`);
     }
   };
 
@@ -59,10 +63,10 @@ export default function LockDetails() {
     if (lockIndexAsNumber !== null) {
       const { pathname } = location;
 
-      if (pathname.startsWith('/locks')) history.push(`/locks/${lockIndexAsNumber}`);
-      else if (pathname.startsWith('/tokens')) history.push(`/tokens/${restrictedTokenAddr}/locks/${lockIndexAsNumber}`)
+      if (pathname.startsWith(`/${appNetwork}/locks`)) history.push(`/${appNetwork}/locks/${lockIndexAsNumber}`);
+      else if (pathname.startsWith(`/${appNetwork}/tokens`)) history.push(`/${appNetwork}/tokens/${restrictedTokenAddr}/${lockIndexAsNumber}`);
     }
-  }, [lockIndexAsNumber])
+  }, [lockIndexAsNumber]);
 
   // token vault management
   const tokenVaultAddr = TOKEN_VAULT[chainId];
@@ -155,15 +159,31 @@ export default function LockDetails() {
     return lockDetails.lock.initiatorAddress;
   }, [lockDetails]);
 
+  // tx hash
+  const [txHash, setTxHash] = useState(null);
+
+  const tryRefreshTxHash = async () => {
+    try {
+      const txHashData = await getTokenLockTxHash(chainId, lockIndexAsNumber);
+      if (txHashData?.status == 200 && txHashData?.data !== '') setTxHash(txHashData.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    if (tokenVault && lockIndexAsNumber !== null) refreshLockDetails();
-  }, [tokenVault, lockIndexAsNumber]);
+    if (tokenVault && lockIndexAsNumber !== null && tokensMetadata !== undefined) {
+      refreshLockDetails();
+      tryRefreshTxHash();
+    }
+  }, [tokenVault, lockIndexAsNumber, tokensMetadata]);
 
   useEffect(() => {
     if (!lockIndexAsNumber) {
       setIsLoading(true);
       setLockDetails(null);
       setTokenInfos(null);
+      setTxHash(null);
     }
   }, [lockIndexAsNumber]);
 
@@ -188,21 +208,27 @@ export default function LockDetails() {
                   {isLinear ? (
                     <>
                       {isLocked ? 'Will be ' : 'Has been '} unlocked from{' '}
-                      <Text as="span" fontWeight="medium">
-                        {formatDate(startDate)}
-                      </Text>{' '}
+                      <Tooltip label={formatTime(startDate)} placement="bottom" closeOnClick={false} rounded="md">
+                        <Text as="span" fontWeight="medium">
+                          {formatDate(startDate)}
+                        </Text>
+                      </Tooltip>{' '}
                       to{' '}
-                      <Text as="span" fontWeight="medium">
-                        {formatDate(endDate)}
-                      </Text>
+                      <Tooltip label={formatTime(endDate)} placement="bottom" closeOnClick={false} rounded="md">
+                        <Text as="span" fontWeight="medium">
+                          {formatDate(endDate)}
+                        </Text>
+                      </Tooltip>
                       .
                     </>
                   ) : (
                     <>
                       {isLocked ? 'Will be ' : 'Has been '} unlocked on{' '}
-                      <Text as="span" fontWeight="medium">
-                        {formatDate(startDate)}
-                      </Text>
+                      <Tooltip label={formatTime(startDate)} placement="bottom" closeOnClick={false} rounded="md">
+                        <Text as="span" fontWeight="medium">
+                          {formatDate(startDate)}
+                        </Text>
+                      </Tooltip>
                       .
                     </>
                   )}
@@ -219,6 +245,21 @@ export default function LockDetails() {
                     </Link>
                   </AlertDescription>
                 </Alert>
+
+                {txHash && (
+                  <Alert status="info" rounded="md" mt="2">
+                    <AlertIcon />
+                    <AlertTitle mr={2}>Transaction:</AlertTitle>
+                    <AlertDescription>
+                      <Link href={getExplorerLink(chainId, txHash, 'transaction')} color="brand.500" fontWeight="semibold" isExternal>
+                        <HStack spacing="1">
+                          <FaReceipt />
+                          <Text>{shortenTxHash(txHash)}</Text>
+                        </HStack>
+                      </Link>
+                    </AlertDescription>
+                  </Alert>
+                )}
               </Box>
 
               <SimpleGrid columns={3} spacing={4} backgroundColor="gray.50" rounded="md" px="4" py="2" mb="4">
@@ -234,7 +275,7 @@ export default function LockDetails() {
                         <Image src={tokenInfos.tokenLogoUrl} />
                       </Circle>
                     )}
-                    <Link as={RouterLink} to={`/tokens/${tokenInfos.tokenAddress}`} color="brand.500" isExternal>
+                    <Link as={RouterLink} to={`/${appNetwork}/tokens/${tokenInfos.tokenAddress}`} color="brand.500" isExternal>
                       <Text fontWeight="semibold">{tokenInfos.tokenSymbol}</Text>
                     </Link>
                   </HStack>

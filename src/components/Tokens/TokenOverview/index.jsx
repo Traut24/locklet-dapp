@@ -37,9 +37,9 @@ export default function TokenOverview(props) {
   }, [tokenInfos])
 
   const totalLocked = useMemo(() => {
-    const currentDate = new Date();
+    if (!tokenLocksByTokenAddr) return null;
 
-    return tokenLocksByTokenAddr.filter(x => x.isActive && !x.isRevoked && x.startTime > currentDate).reduce((a, b) => {
+    return tokenLocksByTokenAddr.filter(x => x.isActive && !x.isRevoked && new Date(x.startTime) > new Date()).reduce((a, b) => {
       const _a = tokenLocksByTokenAddr[a];
       const _b = tokenLocksByTokenAddr[b];
 

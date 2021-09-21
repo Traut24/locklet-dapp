@@ -4,8 +4,10 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
+import { CHAIN_ID_NETWORK_VALUES } from 'src/components/NetworkManager';
 import { ALL_TOKEN_LOCKS_PAGE_SIZE, LATEST_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useToggleModal } from 'src/hooks/useToggleModal';
@@ -31,7 +33,7 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
               <Image src={data.tokenLogoUrl} />
             </Circle>
           )}
-          <Link as={RouterLink} to={`/tokens/${data.tokenAddress}`} color="brand.500">
+          <Link as={RouterLink} to={`/${CHAIN_ID_NETWORK_VALUES[chainId]}/tokens/${data.tokenAddress}`} color="brand.500">
             <Text fontWeight="semibold">{data.tokenSymbol}</Text>
           </Link>
         </HStack>
@@ -104,6 +106,8 @@ export const TOKEN_LOCKS_TABLE_COLUMNS = [
 export default function TokenLocksTable(props) {
   // app state
   const { chainId } = useActiveWeb3React();
+
+  const appNetwork = useSelector((state) => state.app.network);
 
   const toggleLockDetailsModal = useToggleModal('lockDetails');
 
@@ -225,7 +229,7 @@ export default function TokenLocksTable(props) {
                   </ButtonGroup>
                 </HStack>
               ) : (
-                <Button as={RouterLink} to="/locks" rel="more">
+                <Button as={RouterLink} to={`/${appNetwork}/locks`} rel="more">
                   View more
                 </Button>
               )}

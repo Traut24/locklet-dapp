@@ -1,4 +1,5 @@
 import { Box, Flex, HStack } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import { NavItem } from './NavItem';
@@ -16,6 +17,9 @@ const MobileNavMenu = (props) => {
 };
 
 const DesktopNavMenu = (props) => {
+  // app state
+  const appNetwork = useSelector((state) => state.app.network);
+
   const location = useLocation();
   const { pathname } = location;
 
@@ -28,8 +32,8 @@ const DesktopNavMenu = (props) => {
         lg: 'flex',
       }}
     >
-      <NavItem.Desktop active={pathname == '/' || pathname == '/home'} label="Home" to="/home" />
-      <NavItem.Desktop active={pathname.startsWith('/locks')} label="Locks" to="/locks" />
+      <NavItem.Desktop active={pathname == '/eth' || pathname == '/bsc'} label="Home" to={`/${appNetwork}`} />
+      <NavItem.Desktop active={pathname.includes('/locks')} label="Locks" to={`/${appNetwork}/locks`} />
       <NavItem.Desktop label="About" to="https://t.me/locklet_finance" isExternal />
     </HStack>
   );

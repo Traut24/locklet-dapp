@@ -65,8 +65,8 @@ export function shortenAddress(address, chars = 4) {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
 }
 
-export function shortenHash(hash, chars = 4) {
-  return `${hash.substring(0, chars + 2)}`;
+export function shortenTxHash(hash, chars = 4) {
+  return `${hash.substring(0, chars + 2)}...${hash.substring(66 - chars)}`;
 }
 
 // add 10%
