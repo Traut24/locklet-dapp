@@ -34,7 +34,7 @@ export default function ClaimTokens() {
   const [isClaimLoading, setIsClaimLoading] = useState(false);
 
   const claim = async () => {
-    if (!lockIndex || lockIndex <= 0) return;
+    if (lockIndex < 0) return;
 
     try {
       setIsClaimLoading(true);

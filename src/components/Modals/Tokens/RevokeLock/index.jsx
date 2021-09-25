@@ -33,7 +33,7 @@ export default function RevokeLock() {
   const [isRevocationLoading, setIsRevocationLoading] = useState(false);
 
   const revoke = async () => {
-    if (!lockIndex || lockIndex <= 0) return;
+    if (lockIndex < 0) return;
 
     try {
       setIsRevocationLoading(true);

@@ -290,9 +290,12 @@ export default function NewTokenLock() {
         addTx(approveLktTx);
 
         const approveResult = await approveLktTx.wait();
-        if (approveResult?.status === 1) refreshLktAllowance();
+        if (approveResult?.status === 1) {
+          refreshLktAllowance();
+          if (selectedTokenData.symbol == 'LKT') refreshTokenAllowance();
+        }
       } else if (needToApproveToken) {
-        const approveTokenTx = await token.approve(tokenVault.address, MaxUint256);
+        const approveTokenTx = await token.approve(tokenVault.address, MaxUint256, { from: account });
 
         toast.loading('Your transaction is being confirmed...', { id: approveTokenTx.hash });
         addTx(approveTokenTx);
