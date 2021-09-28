@@ -69,7 +69,7 @@ export default function NewTokenLock() {
   const [startDate, setStartDate] = useState(tomorrowDate);
 
   const minLEndDate = new Date(tomorrowDate);
-  minLEndDate.setDate(tomorrowDate.getDate() + 1);
+  minLEndDate.setDate(tomorrowDate.getDate() + 2);
 
   const [lStartDate, setLStartDate] = useState(tomorrowDate);
   const [lEndDate, setLEndDate] = useState(minLEndDate);
@@ -141,9 +141,13 @@ export default function NewTokenLock() {
     return lEndDate < lStartDate;
   }, [lStartDate, lEndDate]);
 
+  const isDurationLessThan2Days = useMemo(() => {
+    return daysBetween(lStartDate, lEndDate) < 2;
+  }, [lStartDate, lEndDate]);
+
   const isValidLock = useMemo(() => {
     let _isValidLock = totalLockAmountAsBN > 0 && amountsMatch && !hasDuplicateRecipients && !hasRecipientsWithInvalidAddrs;
-    if (_isValidLock && lockMode == 'Linearly') _isValidLock = !isEndDateSameAsStartDate && !isEndDateLowerThanStartDate;
+    if (_isValidLock && lockMode == 'Linearly') _isValidLock = !isEndDateSameAsStartDate && !isEndDateLowerThanStartDate && !isDurationLessThan2Days;
     return _isValidLock;
   }, [
     totalLockAmountAsBN,
@@ -153,6 +157,7 @@ export default function NewTokenLock() {
     lockMode,
     isEndDateSameAsStartDate,
     isEndDateLowerThanStartDate,
+    isDurationLessThan2Days
   ]);
 
   const totalLockAmountWithFeeAsBN = useMemo(() => {
@@ -522,6 +527,19 @@ export default function NewTokenLock() {
                                         The{' '}
                                         <Box as="span" fontWeight="semibold">
                                           end date cannot be lower than the start date
+                                        </Box>
+                                        .
+                                      </Text>
+                                    </Alert>
+                                  )}
+
+                                  {isDurationLessThan2Days && (
+                                    <Alert status="warning" rounded="md" mb="2">
+                                      <AlertIcon />
+                                      <Text>
+                                        The unlocking period{' '}
+                                        <Box as="span" fontWeight="semibold">
+                                        cannot be less than 2 days
                                         </Box>
                                         .
                                       </Text>
