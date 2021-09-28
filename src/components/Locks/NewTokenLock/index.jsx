@@ -22,7 +22,7 @@ import { useTransactionAdder } from 'src/hooks/transactions';
 import { useTokenContract, useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
-import { daysBetween, getExplorerLink, isAddress } from 'src/utils';
+import { daysBetween, getContract, getExplorerLink, isAddress } from 'src/utils';
 
 export default function NewTokenLock() {
   // app state
@@ -228,14 +228,14 @@ export default function NewTokenLock() {
       setIsTokenSelected(true);
 
       try {
-        const _token = new Contract(tokenAddr, ERC20.abi, library);
+        const _token = getContract(tokenAddr, ERC20.abi, library, account ? account : undefined);
         setToken(_token);
       } catch (err) {
         console.error(err);
         setIsTokenErrored(true);
       }
     }
-  }, [tokenAddr]);
+  }, [tokenAddr, account]);
 
   const refreshTokenData = async () => {
     const name = await token.name();

@@ -20,10 +20,10 @@ function useContract(address, ABI, withSignerIfPossible = true) {
   }, [address, ABI, library, withSignerIfPossible, account]);
 }
 
-export function useTokenContract(tokenAddress, withSignerIfPossible) {
+export function useTokenContract(tokenAddress, withSignerIfPossible = true) {
   return useContract(tokenAddress, ERC20.abi, withSignerIfPossible);
 }
 
-export function useTokenVaultContract(contractAddress, withSignerIfPossible) {
+export function useTokenVaultContract(contractAddress, withSignerIfPossible = true) {
   return useContract(contractAddress, LockletTokenVault.abi, withSignerIfPossible);
 }

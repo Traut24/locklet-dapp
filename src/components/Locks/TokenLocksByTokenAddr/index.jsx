@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Flex, HStack, Spacer, Stack, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaExpand, FaPlus } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';
@@ -135,7 +135,7 @@ function TokenLocksInternalTable(props) {
                   })}
                   <Td textAlign="right">
                     <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id, restrictedTokenAddr: tokenAddress })}>
-                      See details
+                    <FaExpand style={{ position: 'relative', top: '1px', marginRight: '6px' }} /> See details
                     </Button>
                   </Td>
                 </Tr>

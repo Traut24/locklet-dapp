@@ -30,8 +30,8 @@ const BSCSCAN_PREFIXES = {
 export function getExplorerLink(chainId, data, type) {
   let prefix = null;
 
-  const ethNetworks = [EthChainId.MAINNET, EthChainId.ROPSTEN, EthChainId.RINKEBY, EthChainId.GÖRLI, EthChainId.KOVAN];
-  const bscNetworks = [BscChainId.MAINNET, BscChainId.ROPSTEN];
+  const ethNetworks = [EthChainId.MAINNET, EthChainId.ROPSTEN];
+  const bscNetworks = [BscChainId.MAINNET, BscChainId.TESTNET];
   
   if (ethNetworks.includes(chainId)) {
     prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`;
