@@ -373,7 +373,7 @@ export default function NewTokenLock() {
 
                 <Text fontSize="sm" mt="1" color="gray.600">
                   If you have the slightest doubt or interrogation about the use of this service, please take a look at our{' '}
-                  <Link href="#" color="brand.500" isExternal>
+                  <Link href="https://docs.locklet.finance/locks/how-to/create-a-lock" color="brand.500" isExternal>
                     documentation
                   </Link>
                   .
@@ -588,7 +588,7 @@ export default function NewTokenLock() {
                                   <FaExclamationTriangle />
                                   <Text fontWeight="light">
                                     This is only recommended in very rare cases.{' '}
-                                    <Link href="#" color="brand.500" isExternal>
+                                    <Link href="https://docs.locklet.finance/locks/how-to/create-a-lock#what-is-a-revocable-lock" color="brand.500" isExternal>
                                       Read more...
                                     </Link>
                                   </Text>

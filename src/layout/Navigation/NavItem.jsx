@@ -2,7 +2,7 @@ import { Box, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 const DesktopNavItem = (props) => {
-  const { icon, label, to = '/', active, isExternal } = props;
+  const { icon, label, to, active, isExternal } = props;
   return (
     <HStack
       as={!isExternal ? Link : 'a'}
@@ -35,18 +35,19 @@ const DesktopNavItem = (props) => {
 };
 
 const MobileNavItem = (props) => {
-  const { label, href = '#', active } = props;
+  const { icon, label, to, active, isExternal } = props;
   return (
     <Link
-      as="a"
+      as={isExternal ? 'a' : undefined}
+      to={!isExternal ? to : undefined}
+      href={isExternal ? to : undefined}
+      target={isExternal && '_blank'}
+      aria-current={active ? 'page' : undefined}
       display="block"
-      href={href}
-      target="_blank"
       px="3"
       py="3"
       rounded="md"
       fontWeight="semibold"
-      aria-current={active ? 'page' : undefined}
       _hover={{
         bg: 'whiteAlpha.200',
       }}
