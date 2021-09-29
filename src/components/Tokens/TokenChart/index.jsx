@@ -125,24 +125,24 @@ export default function TokenChart(props) {
           <>
             {!isErrored ? (
               <Line
-              data={{
-                labels: chartLabels,
-                datasets: [
-                  {
-                    data: chartNums,
-                    fill: false,
-                    backgroundColor: 'rgba(0, 0, 0, 0)',
-                    borderColor: '#16cc89',
-                    tension: 0.4,
-                    pointBorderColor: 'rgba(0, 0, 0, 0)',
-                    pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                    pointHoverBackgroundColor: '#16cc89',
-                    pointHoverBorderColor: '#16cc89',
-                  },
-                ],
-              }}
-              options={getOptions()}
-            />
+                data={{
+                  labels: chartLabels,
+                  datasets: [
+                    {
+                      data: chartNums,
+                      fill: false,
+                      backgroundColor: 'rgba(0, 0, 0, 0)',
+                      borderColor: '#16cc89',
+                      tension: 0.4,
+                      pointBorderColor: 'rgba(0, 0, 0, 0)',
+                      pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+                      pointHoverBackgroundColor: '#16cc89',
+                      pointHoverBorderColor: '#16cc89',
+                    },
+                  ],
+                }}
+                options={getOptions()}
+              />
             ) : (
               <TextError text="No data found" mt="22%" />
             )}

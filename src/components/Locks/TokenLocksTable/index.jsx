@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
-import { FaExpand, FaExpandAlt } from 'react-icons/fa';
+import { FaExpand } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import TextLoader from 'src/components/Loaders/TextLoader';

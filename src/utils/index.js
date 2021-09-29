@@ -25,14 +25,14 @@ const ETHERSCAN_PREFIXES = {
 const BSCSCAN_PREFIXES = {
   56: '',
   97: 'testnet.',
-}
+};
 
 export function getExplorerLink(chainId, data, type) {
   let prefix = null;
 
   const ethNetworks = [EthChainId.MAINNET, EthChainId.ROPSTEN];
   const bscNetworks = [BscChainId.MAINNET, BscChainId.TESTNET];
-  
+
   if (ethNetworks.includes(chainId)) {
     prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`;
   } else if (bscNetworks.includes(chainId)) {

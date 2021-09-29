@@ -1,4 +1,4 @@
-import { Button, Input, InputGroup, InputLeftAddon, InputRightElement, useColorMode } from '@chakra-ui/react';
+import { Button, Input, InputGroup, InputRightElement, useColorMode } from '@chakra-ui/react';
 import React, { forwardRef } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import { FaCalendarDay } from 'react-icons/fa';

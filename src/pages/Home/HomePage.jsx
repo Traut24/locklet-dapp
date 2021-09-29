@@ -1,6 +1,5 @@
 import { Box, Heading } from '@chakra-ui/react';
 import React from 'react';
-import { useParams } from 'react-router';
 import LatestTokenLocks from 'src/components/Locks/LatestTokenLocks';
 import StatsBar from 'src/components/StatsBar';
 

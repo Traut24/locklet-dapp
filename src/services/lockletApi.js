@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { network } from 'src/connectors';
 
 const lockletApi = axios.create({
   baseURL: 'https://func.locklet.finance/api/',

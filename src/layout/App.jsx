@@ -89,7 +89,7 @@ export default function App() {
 
           {/* Routes */}
           <Switch>
-            <Route path={["/:network"]}>
+            <Route path={['/:network']}>
               <NetworkManager />
 
               <Route exact path="/:network" component={HomePage} />

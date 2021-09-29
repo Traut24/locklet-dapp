@@ -64,9 +64,9 @@ export default function NetworkSelector() {
   const appNetwork = useSelector((state) => state.app.network);
 
   useEffect(() => {
-    const selectedOption = options.find(x => x.value == appNetwork);
+    const selectedOption = options.find((x) => x.value == appNetwork);
     setSelectedOption(selectedOption);
-  }, [appNetwork])
+  }, [appNetwork]);
 
   // component state
   const [isOpen, setIsOpen] = useState(false);

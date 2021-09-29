@@ -135,7 +135,7 @@ function TokenLocksInternalTable(props) {
                   })}
                   <Td textAlign="right">
                     <Button variant="link" colorScheme="brand" onClick={() => toggleLockDetailsModal({ lockIndex: row.id, restrictedTokenAddr: tokenAddress })}>
-                    <FaExpand style={{ position: 'relative', top: '1px', marginRight: '6px' }} /> See details
+                      <FaExpand style={{ position: 'relative', top: '1px', marginRight: '6px' }} /> See details
                     </Button>
                   </Td>
                 </Tr>

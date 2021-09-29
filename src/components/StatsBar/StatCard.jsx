@@ -1,4 +1,4 @@
-import { Box, Circle, Flex, Heading, HStack, Image, useColorModeValue as mode, Skeleton, Text } from '@chakra-ui/react';
+import { Box, Circle, Flex, Heading, HStack, Image, Skeleton, Text } from '@chakra-ui/react';
 import { formatUsd } from 'src/utils';
 
 import { Indicator } from './Indicator';

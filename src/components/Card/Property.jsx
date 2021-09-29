@@ -1,5 +1,4 @@
 import { Box, Flex, Skeleton } from '@chakra-ui/react';
-import { useMemo } from 'react';
 import * as React from 'react';
 
 export const Property = (props) => {

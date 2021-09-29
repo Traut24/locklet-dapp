@@ -1,8 +1,41 @@
-import { CheckIcon, CloseIcon, SpinnerIcon, WarningIcon } from '@chakra-ui/icons';
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Center, Circle, CircularProgress, Collapse, Divider, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useNumberInput } from '@chakra-ui/react';
+import { CheckIcon, WarningIcon } from '@chakra-ui/icons';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Circle,
+  CircularProgress,
+  Collapse,
+  Divider,
+  Fade,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Link,
+  Spacer,
+  Stack,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text
+} from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import capitalize from 'capitalize-sentence';
 import ERC20 from 'contracts/ERC20.json';
@@ -157,7 +190,7 @@ export default function NewTokenLock() {
     lockMode,
     isEndDateSameAsStartDate,
     isEndDateLowerThanStartDate,
-    isDurationLessThan2Days
+    isDurationLessThan2Days,
   ]);
 
   const totalLockAmountWithFeeAsBN = useMemo(() => {
@@ -223,7 +256,7 @@ export default function NewTokenLock() {
 
     setSelectedTokenAllowanceAsBN(BigNumber.from(0));
     setTokenBalanceAsBN(BigNumber.from(0));
-    
+
     if (tokenAddr?.length == 42) {
       setIsTokenSelected(true);
 
@@ -539,7 +572,7 @@ export default function NewTokenLock() {
                                       <Text>
                                         The unlocking period{' '}
                                         <Box as="span" fontWeight="semibold">
-                                        cannot be less than 2 days
+                                          cannot be less than 2 days
                                         </Box>
                                         .
                                       </Text>

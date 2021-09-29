@@ -56,7 +56,7 @@ export default function TokenPage() {
     setTokenInfos({ tokenAddress, tokenName, tokenSymbol, tokenDecimals, tokenTotalSupply, tokenLogoUrl });
     setIsLoading(false);
   };
-  
+
   const history = useHistory();
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function TokenPage() {
           </HStack>
 
           <SimpleGrid columns={2} spacing={6}>
-            <TokenOverview tokenInfos={tokenInfos}  />
+            <TokenOverview tokenInfos={tokenInfos} />
             <TokenChart tokenAddress={checksumAddress} />
           </SimpleGrid>
         </Box>

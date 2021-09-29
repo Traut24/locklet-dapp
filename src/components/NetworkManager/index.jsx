@@ -15,7 +15,7 @@ export default function NetworkManager() {
   const { network } = useParams();
 
   const appNetwork = useSelector((state) => state.app.network);
-  
+
   useEffect(() => {
     if (network && NETWORK_VALUES.includes(network) && network !== appNetwork) {
       dispatch({ type: SET_NETWORK, network: network });

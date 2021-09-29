@@ -6,11 +6,8 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Center,
-  CircularProgress,
   AlertDescription,
   Flex,
-  Heading,
   HStack,
   IconButton,
   Menu,
@@ -30,8 +27,7 @@ import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import ERC20 from 'contracts/ERC20.json';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ExternalLink as LinkIcon } from 'react-feather';
-import { FaBan, FaCoins, FaExpand, FaExpandAlt, FaEye, FaHashtag, FaInfoCircle, FaLayerGroup, FaList, FaReceipt, FaRegEye } from 'react-icons/fa';
+import { FaBan, FaCoins, FaExpand } from 'react-icons/fa';
 import TextLoader from 'src/components/Loaders/TextLoader';
 import { TOKEN_VAULT, YOUR_TOKEN_LOCKS_PAGE_SIZE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';

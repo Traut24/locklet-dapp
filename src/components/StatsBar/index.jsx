@@ -1,6 +1,6 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { FaDollarSign, FaUsers } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import LktLogo from 'src/assets/images/favicon.png';
 import { getChainsStats, getMarketStats } from 'src/services/lockletApi';
 

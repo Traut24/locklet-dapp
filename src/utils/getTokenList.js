@@ -10,7 +10,7 @@ export default async function getTokenList(networkId) {
   const { data } = await axios.get(tokenListUrl);
 
   let tokens = data?.tokens ?? [];
-  
+
   tokens.push({
     ...LKT_TOKEN_INFOS,
     address: LKT_TOKEN[networkId],

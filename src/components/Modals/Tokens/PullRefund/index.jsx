@@ -1,4 +1,18 @@
-import { Button, Center, Code, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Code,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@chakra-ui/react';
 import capitalize from 'capitalize-sentence';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';

@@ -9,7 +9,7 @@ export function useToggleModal(modalName, onCloseCallback = undefined) {
 
   return useCallback((props) => {
     if (onCloseCallback) onCloseCallback();
-    
+
     if (modalOpen) return dispatch({ type: CLOSE_MODAL, name: modalName });
     else return dispatch({ type: OPEN_MODAL, name: modalName, ...props });
   });
