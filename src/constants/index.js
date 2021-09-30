@@ -45,6 +45,7 @@ export const SUPPORTED_WALLETS = {
     href: null,
     color: '#E8831D',
   },
+  /*
   WALLET_CONNECT: {
     connector: walletconnect,
     name: 'WalletConnect',
@@ -89,6 +90,7 @@ export const SUPPORTED_WALLETS = {
     color: '#4A6C9B',
     mobile: true,
   },
+  */
 };
 
 export const NetworkContextName = 'NETWORK';
