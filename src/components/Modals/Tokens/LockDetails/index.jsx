@@ -1,33 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Badge,
-  Box,
-  Button,
-  Circle,
-  HStack,
-  Image,
-  Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  SimpleGrid,
-  Spacer,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-} from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Badge, Box, Button, Circle, HStack, Image, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Table, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
@@ -270,7 +241,7 @@ export default function LockDetails() {
                   </AlertTitle>
                   {isRevocable && (
                     <AlertDescription>
-                      <Link href="https://docs.locklet.finance/locks/how-to/create-a-lock#what-is-a-revocable-lock" color="brand.500" isExternal>
+                      <Link href="https://docs.locklet.finance/locks/create-a-lock#what-is-a-revocable-lock" color="brand.500" isExternal>
                         Read more...
                       </Link>
                     </AlertDescription>

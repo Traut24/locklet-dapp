@@ -1,39 +1,5 @@
 import { CheckIcon, WarningIcon } from '@chakra-ui/icons';
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Button,
-  ButtonGroup,
-  Center,
-  Circle,
-  CircularProgress,
-  Collapse,
-  Divider,
-  Fade,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Image,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
-  Link,
-  Spacer,
-  Stack,
-  Switch,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text
-} from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, ButtonGroup, Center, Circle, CircularProgress, Collapse, Divider, Fade, Flex, FormControl, FormHelperText, FormLabel, HStack, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Spacer, Stack, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
@@ -406,7 +372,7 @@ export default function NewTokenLock() {
 
                 <Text fontSize="sm" mt="1" color="gray.600">
                   If you have the slightest doubt or interrogation about the use of this service, please take a look at our{' '}
-                  <Link href="https://docs.locklet.finance/locks/how-to/create-a-lock" color="brand.500" isExternal>
+                  <Link href="https://docs.locklet.finance/locks/create-a-lock" color="brand.500" isExternal>
                     documentation
                   </Link>
                   .
@@ -621,7 +587,7 @@ export default function NewTokenLock() {
                                   <FaExclamationTriangle />
                                   <Text fontWeight="light">
                                     This is only recommended in very rare cases.{' '}
-                                    <Link href="https://docs.locklet.finance/locks/how-to/create-a-lock#what-is-a-revocable-lock" color="brand.500" isExternal>
+                                    <Link href="https://docs.locklet.finance/locks/create-a-lock#what-is-a-revocable-lock" color="brand.500" isExternal>
                                       Read more...
                                     </Link>
                                   </Text>
