@@ -9,9 +9,12 @@
     "build": "cross-env NODE_ENV=production webpack",
     "format": "prettier --write 'src/**/*.js'"
   },
+  "resolutions": {
+    "@chakra-ui/react-utils": "1.1.2"
+  },
   "dependencies": {
-    "@chakra-ui/icons": "1.0.13",
-    "@chakra-ui/react": "1.6.4",
+    "@chakra-ui/icons": "^1.0.13",
+    "@chakra-ui/react": "^1.6.4",
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@pancakeswap/sdk": "^2.3.2",
@@ -62,10 +65,6 @@
     "tiny-warning": "^1.0.3",
     "tronweb": "^4.0.0",
     "truffle": "^5.4.10"
-  },
-  "resolutions": {
-    "@chakra-ui/react-utils": "1.1.2",
-    "@chakra-ui/color-mode": "<1.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
