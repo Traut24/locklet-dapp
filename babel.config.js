@@ -21,6 +21,7 @@ module.exports = function (api) {
     'transform-react-pure-class-to-function',
     '@babel/plugin-transform-runtime',
 
+    '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-function-sent',
     '@babel/plugin-proposal-export-namespace-from',

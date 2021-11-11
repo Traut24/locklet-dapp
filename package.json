@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.13",
-    "@chakra-ui/react": "1.6.4",
+    "@chakra-ui/react": "^1.6.4",
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@pancakeswap/sdk": "^2.3.2",
@@ -73,6 +73,7 @@
     "@babel/plugin-proposal-export-namespace-from": "7.12.1",
     "@babel/plugin-proposal-function-sent": "7.12.1",
     "@babel/plugin-proposal-json-strings": "7.12.1",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.0",
     "@babel/plugin-proposal-numeric-separator": "7.12.7",
     "@babel/plugin-proposal-throw-expressions": "7.12.1",
     "@babel/plugin-syntax-dynamic-import": "7.8.3",
