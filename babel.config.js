@@ -16,12 +16,13 @@ module.exports = function (api) {
     '@babel/preset-react',
   ];
   const plugins = [
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+    
     '@babel/transform-react-constant-elements',
     'transform-react-remove-prop-types',
     'transform-react-pure-class-to-function',
     '@babel/plugin-transform-runtime',
 
-    '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-function-sent',
     '@babel/plugin-proposal-export-namespace-from',
