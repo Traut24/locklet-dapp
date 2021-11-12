@@ -23,4 +23,4 @@ yarn.lock*
 packages/api/etc/
 
 # dotenv environment variables file
-.env.*
+.env
