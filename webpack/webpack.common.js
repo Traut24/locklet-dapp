@@ -1,12 +1,11 @@
-const webpack = require('webpack');
-
 const paths = require('./paths');
+
+const webpack = require('webpack');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   // Where webpack looks to start building the bundle
@@ -57,9 +56,6 @@ module.exports = {
 
     // Polyfill Node.js core modules
     new NodePolyfillPlugin(),
-
-    // A secure webpack plugin that supports dotenv and other environment variables and only exposes what you choose and use
-    new Dotenv(),
 
     // Automatically import react
     new webpack.ProvidePlugin({
