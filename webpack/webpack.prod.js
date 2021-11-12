@@ -27,11 +27,7 @@ module.exports = merge(common, {
       'REACT_APP_ETH_CHAIN_ID',
       'REACT_APP_ETH_NETWORK_URL',
       'REACT_APP_BSC_CHAIN_ID',
-      'REACT_APP_BSC_NETWORK_URL',
-      'REACT_APP_TRX_CHAIN_ID',
-      'REACT_APP_TRX_NETWORK_URL',
-      'REACT_APP_BTTC_CHAIN_ID',
-      'REACT_APP_BTTC_NETWORK_URL'
+      'REACT_APP_BSC_NETWORK_URL'
     ]),
   ],
   module: {
