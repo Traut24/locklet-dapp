@@ -2,6 +2,8 @@ import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId, Token } from '@uniswap/sdk';
 import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
 
+import MetamaskIcon from 'src/assets/images/providers/metamask.png';
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Block time here is slightly higher (~1s) than average in order to avoid ongoing proposals past the displayed time
@@ -31,7 +33,6 @@ export const SUPPORTED_WALLETS = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
@@ -40,7 +41,7 @@ export const SUPPORTED_WALLETS = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    icon: MetamaskIcon,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',

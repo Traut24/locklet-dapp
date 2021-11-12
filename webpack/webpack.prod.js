@@ -1,69 +1,57 @@
+const paths = require('./paths');
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const commonPaths = require('./paths');
-
-module.exports = {
+module.exports = merge(common, {
   mode: 'production',
+  devtool: false,
   output: {
-    filename: `${commonPaths.jsFolder}/[name].[hash].js`,
+    path: paths.build,
     publicPath: '/',
-    path: commonPaths.outputPath,
-    chunkFilename: `${commonPaths.jsFolder}/[name].[chunkhash].js`,
+    filename: 'js/[name].[contenthash].bundle.js',
   },
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        cache: true,
-        sourceMap: false,
-      }),
-      new OptimizeCSSAssetsPlugin(),
-    ],
-    splitChunks: {
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'initial',
-        },
-        async: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'async',
-          chunks: 'async',
-          minChunks: 4,
-        },
-      },
-    },
-    // Keep the runtime chunk seperated to enable long term caching
-    // https://twitter.com/wSokra/status/969679223278505985
-    runtimeChunk: true,
-  },
-
+  plugins: [
+    // Note: style-loader is for development, MiniCssExtractPlugin is for production
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].[contenthash].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
   module: {
     rules: [
       {
-        test: /\.(css)$/,
+        test: /\.(scss|css)$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
-              sourceMap: false
+              importLoaders: 2,
+              sourceMap: false,
             },
-          }
+          },
+          'sass-loader',
         ],
       },
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: `${commonPaths.cssFolder}/[name].[hash].css`,
-      chunkFilename: `${commonPaths.cssFolder}/[name].[chunkhash].css`,
-    }),
-  ],
-  devtool: 'source-map',
-};
+  optimization: {
+    minimize: true,
+    minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin()],
+    // Once your build outputs multiple chunks, this option will ensure they share the webpack runtime
+    // instead of having their own. This also helps with long-term caching, since the chunks will only
+    // change when actual code changes, not the webpack runtime.
+    runtimeChunk: {
+      name: 'runtime',
+    },
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
+});

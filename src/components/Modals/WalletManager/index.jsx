@@ -103,17 +103,20 @@ const WalletManager = () => {
   };
 
   // close wallet modal if fortmatic modal is active
+  /*
   useEffect(() => {
     fortmatic.on(OVERLAY_READY, () => {
       toggleWalletModal();
     });
   }, [toggleWalletModal]);
+  */
 
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask;
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
+
       // check for mobile options
       if (isMobile) {
         // disable portis on mobile for now
@@ -134,7 +137,7 @@ const WalletManager = () => {
               link={option.href}
               header={option.name}
               subheader={null}
-              icon={require('src/assets/images/providers/' + option.iconName)}
+              icon={option.icon}
             />
           );
         }
@@ -184,8 +187,8 @@ const WalletManager = () => {
             color={option.color}
             link={option.href}
             header={option.name}
-            subheader={null} // use option.descriptio to bring back multi-line
-            icon={require('src/assets/images/providers/' + option.iconName)}
+            subheader={null} // use option.description to bring back multi-line
+            icon={option.icon}
           />
         )
       );

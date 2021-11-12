@@ -1,38 +1,21 @@
+const paths = require('./paths');
+
 const webpack = require('webpack');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
 
-const commonPaths = require('./paths');
-
-module.exports = {
+module.exports = merge(common, {
   mode: 'development',
-  output: {
-    filename: '[name].js',
-    publicPath: '/',
-    path: commonPaths.outputPath,
-    chunkFilename: '[name].js',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(css)$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true
-            },
-          }
-        ],
-      },
-    ],
-  },
+  devtool: 'inline-source-map',
   devServer: {
-    contentBase: commonPaths.outputPath,
+    historyApiFallback: true,
+    contentBase: paths.build,
+    open: true,
     compress: true,
     hot: true,
-    historyApiFallback: true,
-    disableHostCheck: true,
+    port: 8080,
   },
-  plugins: [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()].filter(Boolean),
-};
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+});

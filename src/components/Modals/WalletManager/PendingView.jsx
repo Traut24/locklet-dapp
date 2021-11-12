@@ -111,7 +111,7 @@ export default function PendingView({ connector, error = false, setPendingError,
               color={option.color}
               header={option.name}
               subheader={option.description}
-              icon={require('src/assets/images/providers/' + option.iconName)}
+              icon={option.icon}
             />
           );
         }
