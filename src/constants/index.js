@@ -1,8 +1,22 @@
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId, Token } from '@uniswap/sdk';
-import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
-
 import MetamaskIcon from 'src/assets/images/providers/metamask.png';
+import TronLinkIcon from 'src/assets/images/providers/tronLinkIcon.png';
+import { fortmatic, injected, portis, tronLink, walletconnect, walletlink } from 'src/connectors';
+
+export const __DEV__ = process.env.NODE_ENV === 'development';
+
+/* TRON */
+export const TrxChainId = {
+  MAINNET: '00000000000000001ebf88508a03865c71d452e25f4d51194196a1d22b6653dc',
+  NILE: '0000000000000000d698d4192c56cb6be724a558448e2684802de4d6cd8690dc',
+};
+
+/* BTTC */
+export const BttcChainId = {
+  MAINNET: 199,
+  TESTNET: 1028,
+};
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -15,6 +29,9 @@ export const TOKEN_VAULT = {
 
   [BscChainId.MAINNET]: '0xc275d3B5197d55119111237D6c2baC2FB089f4B6',
   [BscChainId.TESTNET]: '0x6413981FE0cBF781b0629c7ee1718cec56981DC7',
+
+  [BttcChainId.MAINNET]: '',
+  [BttcChainId.TESTNET]: '0x25c3e99f2b16f21Bd6B0FaF451F6c2557E6C7346',
 };
 
 export const LKT_TOKEN = {
@@ -23,6 +40,19 @@ export const LKT_TOKEN = {
 
   [BscChainId.MAINNET]: '0xde8fa069707b6322ad45d001425b617f4f1930bd',
   [BscChainId.TESTNET]: '0x6bD8b4C060a90B86C57D71226a7E23Cf9f308429',
+
+  [BttcChainId.MAINNET]: '',
+  [BttcChainId.TESTNET]: '0xc75b9a01271ab7b307733c0d12eb90b19807d321',
+};
+
+export const TOKEN_VAULT_TRON = {
+  [TrxChainId.MAINNET]: '',
+  [TrxChainId.NILE]: 'TPUB1Acw4foFoDJE3wERYWb3C3z63A8xg4',
+};
+
+export const LKT_TOKEN_TRON = {
+  [TrxChainId.MAINNET]: '',
+  [TrxChainId.NILE]: 'TYMv24WjzEBgbuz8fSyhHA8SfFVzAfGe4R',
 };
 
 export const getLockletToken = (chainId) => {
@@ -42,6 +72,14 @@ export const SUPPORTED_WALLETS = {
     connector: injected,
     name: 'MetaMask',
     icon: MetamaskIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D',
+  },
+  TRON_LINK: {
+    connector: tronLink,
+    name: 'TronLink',
+    icon: TronLinkIcon,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
@@ -93,6 +131,8 @@ export const SUPPORTED_WALLETS = {
   },
   */
 };
+
+export const PROVIDERS = { EVM: 'EVM', TRON: 'TRON' };
 
 export const NetworkContextName = 'NETWORK';
 

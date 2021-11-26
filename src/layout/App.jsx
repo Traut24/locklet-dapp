@@ -16,9 +16,10 @@ import NetworkSelector from 'src/components/NetworkSelector';
 import BlockSync from 'src/components/Synchronizers/BlockSync';
 import MetaDataSync from 'src/components/Synchronizers/MetaDataSync';
 import TransactionSync from 'src/components/Synchronizers/TransactionSync';
-import Web3ReactManager from 'src/components/Web3ReactManager';
+import Web3Manager from 'src/components/Web3Manager';
 import Web3Status from 'src/components/Web3Status';
-import { useActiveWeb3React } from 'src/hooks';
+import { BttcChainId, TrxChainId } from 'src/constants';
+import { useActiveUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
 import HomePage from 'src/pages/Home/HomePage';
 import LocksListPage from 'src/pages/Locks/LocksListPage';
 import NewTokenLockPage from 'src/pages/Locks/NewTokenLockPage';
@@ -26,14 +27,18 @@ import TokenPage from 'src/pages/Tokens/TokenPage';
 
 import { NavMenu } from './Navigation/NavMenu';
 
+import 'src/styles/app.css';
+
 const TEST_NETWORKS_COLORS = {
   [EthChainId.ROPSTEN]: 'pink.400',
   [BscChainId.TESTNET]: 'orange.400',
+  [TrxChainId.NILE]: 'red.400',
+  [BttcChainId.TESTNET]: 'black',
 };
 
 export default function App() {
   // app state
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = useActiveUnifiedWeb3();
 
   const appNetwork = useSelector((state) => state.app.network);
 
@@ -44,6 +49,14 @@ export default function App() {
 
   const isBscTestnet = useMemo(() => {
     return chainId == BscChainId.TESTNET && appNetwork == 'bsc';
+  }, [chainId, appNetwork]);
+
+  const isNile = useMemo(() => {
+    return chainId == TrxChainId.NILE && appNetwork == 'trx';
+  }, [chainId, appNetwork]);
+
+  const isBttcTestnet = useMemo(() => {
+    return chainId == BttcChainId.TESTNET && appNetwork == 'bttc';
   }, [chainId, appNetwork]);
 
   return (
@@ -66,10 +79,11 @@ export default function App() {
             <NavMenu.Desktop />
 
             <HStack pr="2">
-              {(isRopsten || isBscTestnet) && (
+              {(isRopsten || isBscTestnet || isNile || isBttcTestnet) && (
                 <Button color="white" bgColor={TEST_NETWORKS_COLORS[chainId]} _hover={{ bgColor: TEST_NETWORKS_COLORS[chainId] }} size="sm" cursor="unset">
                   {isRopsten && 'Ropsten'}
-                  {isBscTestnet && 'Testnet'}
+                  {(isBscTestnet || isBttcTestnet) && 'Testnet'}
+                  {isNile && 'Nile'}
                 </Button>
               )}
               <NetworkSelector />
@@ -81,7 +95,10 @@ export default function App() {
           </Flex>
         </Flex>
 
-        <Web3ReactManager>
+        {/* Network */}
+        <NetworkManager />
+
+        <Web3Manager>
           {/* Sync */}
           <BlockSync />
           <TransactionSync />
@@ -90,8 +107,6 @@ export default function App() {
           {/* Routes */}
           <Switch>
             <Route path={['/:network']}>
-              <NetworkManager />
-
               <Route exact path="/:network" component={HomePage} />
 
               <Route exact path="/:network/locks/:lockIndex?" component={LocksListPage} />
@@ -102,7 +117,7 @@ export default function App() {
 
             <Redirect to="/eth" />
           </Switch>
-        </Web3ReactManager>
+        </Web3Manager>
 
         {/* Modals */}
         <WalletManager />

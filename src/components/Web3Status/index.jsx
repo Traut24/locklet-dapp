@@ -2,16 +2,18 @@ import { Button } from '@chakra-ui/react';
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CoinbaseWalletIcon from 'src/assets/images/providers/coinbaseWalletIcon.svg';
 import FortmaticIcon from 'src/assets/images/providers/fortmaticIcon.png';
 import PortisIcon from 'src/assets/images/providers/portisIcon.png';
+import TronLinkIcon from 'src/assets/images/providers/tronLinkIcon.png';
 import WalletConnectIcon from 'src/assets/images/providers/walletConnectIcon.svg';
-import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
-import { NetworkContextName } from 'src/constants';
+import { fortmatic, injected, portis, tronLink, walletconnect, walletlink } from 'src/connectors';
+import { BttcChainId, TrxChainId } from 'src/constants';
 import { useToggleModal } from 'src/hooks/useToggleModal';
-import { CLOSE_MODAL, OPEN_MODAL, SET_NETWORK_MISSMATCH } from 'src/store';
+import { useNetworkUnifiedWeb3, useUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
+import { SET_NETWORK_MISSMATCH } from 'src/store';
 import { shortenAddress } from 'src/utils';
 import styled from 'styled-components';
 
@@ -62,13 +64,20 @@ function StatusIcon({ connector }) {
       </IconWrapper>
     );
   }
+  if (connector === tronLink) {
+    return (
+      <IconWrapper size={16}>
+        <img src={TronLinkIcon} />
+      </IconWrapper>
+    );
+  }
   return null;
 }
 
 function Web3StatusInner() {
   const dispatch = useDispatch();
 
-  const { chainId, account, connector, error } = useWeb3React();
+  const { chainId, account, connector, error } = useUnifiedWeb3();
 
   const toggleWalletModal = useToggleModal('walletManager');
 
@@ -89,6 +98,14 @@ function Web3StatusInner() {
       case 'bsc':
         dispatch({ type: SET_NETWORK_MISSMATCH, missmatch: chainId != BscChainId.MAINNET && chainId != BscChainId.TESTNET });
         break;
+
+      case 'trx':
+        dispatch({ type: SET_NETWORK_MISSMATCH, missmatch: chainId != TrxChainId.MAINNET && chainId != TrxChainId.NILE });
+        break;
+
+        case 'bttc':
+          dispatch({ type: SET_NETWORK_MISSMATCH, missmatch: chainId != BttcChainId.MAINNET && chainId != BttcChainId.TESTNET });
+          break;
     }
   }, [chainId, appNetwork, account]);
 
@@ -115,10 +132,10 @@ function Web3StatusInner() {
 }
 
 export default function Web3Status() {
-  const { active } = useWeb3React();
-  const contextNetwork = useWeb3React(NetworkContextName);
-
-  if (!contextNetwork.active && !active) {
+  const { active } = useUnifiedWeb3();
+  const { active: networkActive } = useNetworkUnifiedWeb3();
+  
+  if (!networkActive && !active) {
     return null;
   }
 

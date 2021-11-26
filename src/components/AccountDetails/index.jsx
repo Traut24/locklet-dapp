@@ -3,10 +3,12 @@ import { ExternalLink as LinkIcon } from 'react-feather';
 import CoinbaseWalletIcon from 'src/assets/images/providers/coinbaseWalletIcon.svg';
 import FortmaticIcon from 'src/assets/images/providers/fortmaticIcon.png';
 import PortisIcon from 'src/assets/images/providers/portisIcon.png';
+import TronLinkIcon from 'src/assets/images/providers/tronLinkIcon.png';
 import WalletConnectIcon from 'src/assets/images/providers/walletConnectIcon.svg';
-import { fortmatic, injected, portis, walletconnect, walletlink } from 'src/connectors';
+import { fortmatic, injected, portis, tronLink, walletconnect, walletlink } from 'src/connectors';
 import { SUPPORTED_WALLETS } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
+import { useActiveUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
 import { getExplorerLink, shortenAddress } from 'src/utils';
 import styled from 'styled-components';
 
@@ -108,17 +110,17 @@ const IconWrapper = styled.div`
   }
 `;
 
-export default function AccountDetails({ openOptions }) {
-  const { chainId, account, connector } = useActiveWeb3React();
+export function formatConnectorName(connector) {
+  const { ethereum } = window;
+  const isMetaMask = !!(ethereum && ethereum.isMetaMask);
+  const name = Object.keys(SUPPORTED_WALLETS)
+    .filter((k) => SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK')))
+    .map((k) => SUPPORTED_WALLETS[k].name)[0];
+  return name;
+}
 
-  function formatConnectorName() {
-    const { ethereum } = window;
-    const isMetaMask = !!(ethereum && ethereum.isMetaMask);
-    const name = Object.keys(SUPPORTED_WALLETS)
-      .filter((k) => SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK')))
-      .map((k) => SUPPORTED_WALLETS[k].name)[0];
-    return <WalletName>Connected with {name}</WalletName>;
-  }
+export default function AccountDetails({ openOptions }) {
+  const { chainId, account, connector } = useActiveUnifiedWeb3();
 
   function getStatusIcon() {
     if (connector === injected) {
@@ -168,6 +170,13 @@ export default function AccountDetails({ openOptions }) {
         </>
       );
     }
+    if (connector === tronLink) {
+      return (
+        <IconWrapper size={16}>
+          <img src={TronLinkIcon} alt="tronlink logo" />
+        </IconWrapper>
+      );
+    }
     return null;
   }
 
@@ -179,9 +188,9 @@ export default function AccountDetails({ openOptions }) {
         <YourAccount>
           <InfoCard>
             <AccountGroupingRow>
-              {formatConnectorName()}
+              <WalletName>Connected with {formatConnectorName(connector)}</WalletName>
               <div>
-                {connector !== injected && connector !== walletlink && (
+                {connector !== injected && connector !== walletlink && connector !== tronLink && (
                   <button
                     variant="action"
                     style={{ fontSize: '.825rem', fontWeight: 400 }}
@@ -192,6 +201,7 @@ export default function AccountDetails({ openOptions }) {
                     Disconnect
                   </button>
                 )}
+                {/*
                 <button
                   style={{ fontSize: '.825rem', fontWeight: 400 }}
                   onClick={() => {
@@ -200,6 +210,7 @@ export default function AccountDetails({ openOptions }) {
                 >
                   Change
                 </button>
+                */}
               </div>
             </AccountGroupingRow>
             <AccountGroupingRow id="web3-account-identifier-row">

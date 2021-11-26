@@ -6,7 +6,9 @@ import { getChainsStats, getMarketStats } from 'src/services/lockletApi';
 
 import { StatCard } from './StatCard';
 
-export default function Stats() {
+export default function StatsBar() {
+  const [isMounted, setIsMounted] = useState(false);
+
   const [marketStats, setMarketStats] = useState(null);
   const [chainsStats, setChainsStats] = useState(null);
 
@@ -14,12 +16,16 @@ export default function Stats() {
     const { data: marketStatsData } = await getMarketStats();
     const { data: chainsStatsData } = await getChainsStats();
 
+    if (!isMounted) return;
+
     if (marketStatsData) setMarketStats(marketStatsData);
     if (chainsStatsData) setChainsStats(chainsStatsData);
   };
 
   useEffect(() => {
+    setIsMounted(true);
     refreshStats();
+    return () => setIsMounted(false);
   }, []);
 
   return (

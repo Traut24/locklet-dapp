@@ -6,7 +6,10 @@ export const getTrustWalletTokenListUrl = (blockchain) => {
 };
 
 export default async function getTokenList(networkId) {
-  const tokenListUrl = getTrustWalletTokenListUrl(TRUST_WALLET_NETWORK_ALIAS[networkId]);
+  const networkAlias = TRUST_WALLET_NETWORK_ALIAS[networkId];
+  if (!networkAlias) return;
+
+  const tokenListUrl = getTrustWalletTokenListUrl(networkAlias);
   const { data } = await axios.get(tokenListUrl);
 
   let tokens = data?.tokens ?? [];

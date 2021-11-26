@@ -1,16 +1,18 @@
-import { Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useSelector } from 'react-redux';
 import MetamaskIcon from 'src/assets/images/providers/metamask.png';
 import AccountDetails from 'src/components/AccountDetails';
+import { formatConnectorName } from 'src/components/AccountDetails';
 import { fortmatic, injected, portis } from 'src/connectors';
-import { OVERLAY_READY } from 'src/connectors/Fortmatic';
-import { SUPPORTED_WALLETS } from 'src/constants';
+import { OVERLAY_READY } from 'src/connectors/Ethereum/FortmaticConnector';
+import { PROVIDERS, SUPPORTED_WALLETS } from 'src/constants';
 import usePrevious from 'src/hooks/usePrevious';
 import { useToggleModal } from 'src/hooks/useToggleModal';
+import { useTronWeb } from 'src/hooks/useTronWeb';
 import styled from 'styled-components';
 
 import Option from './Option';
@@ -36,21 +38,32 @@ const WALLET_VIEWS = {
 };
 
 const WalletManager = () => {
-  const { active, account, connector, activate, error } = useWeb3React();
+  const { active: web3Active, account: web3Account, connector: web3Connector, activate: activateWeb3, error: web3Error } = useWeb3React();
+  const { active: tronActive, account: tronAccount, activate: activateTron, connector: tronConnector, error: tronError } = useTronWeb();
 
   const networkMissmatch = useSelector((state) => state.app.networkMissmatch);
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
 
   const [pendingWallet, setPendingWallet] = useState();
-
   const [pendingError, setPendingError] = useState(false);
 
-  const previousAccount = usePrevious(account);
+  const error = useMemo(() => {
+    if (web3Error) return web3Error;
+    else if (tronError) return tronError;
+    else return null;
+  }, [web3Error, tronError]);
 
   const walletModalOpen = useSelector((state) => state.modals.walletManager.show);
-
   const toggleWalletModal = useToggleModal('walletManager');
+
+  const account = useMemo(() => {
+    if (web3Account) return web3Account;
+    else if (tronAccount) return tronAccount;
+    else return null;
+  }, [web3Account, tronAccount]);
+
+  const previousAccount = usePrevious(account);
 
   // close on connection, when logged out before
   useEffect(() => {
@@ -68,7 +81,17 @@ const WalletManager = () => {
   }, [walletModalOpen]);
 
   // close modal when a connection is successful
+  const active = useMemo(() => {
+    return web3Active || tronActive;
+  }, [web3Active, tronActive]);
   const activePrevious = usePrevious(active);
+
+  const connector = useMemo(() => {
+    if (web3Connector) return web3Connector;
+    else if (tronConnector) return tronConnector;
+    else return null;
+  }, [web3Connector, tronConnector]);
+
   const connectorPrevious = usePrevious(connector);
   useEffect(() => {
     if (walletModalOpen && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
@@ -92,18 +115,34 @@ const WalletManager = () => {
       connector.walletConnectProvider = undefined;
     }
 
-    connector &&
-      activate(connector, undefined, true).catch((error) => {
+    if (!connector) {
+      console.error('No connector found:', connector);
+      return;
+    }
+
+    // handling classic Ethereum connectors
+    if (!connector.type || connector.type === PROVIDERS.EVM) {
+      activateWeb3(connector, undefined, true).catch((error) => {
+        console.error('(ConnectorType: Ethereum) Error:', error);
+
         if (error instanceof UnsupportedChainIdError) {
-          activate(connector); // a little janky...can't use setError because the connector isn't set
+          activateWeb3(connector); // a little janky...can't use setError because the connector isn't set
         } else {
           setPendingError(true);
         }
       });
+    }
+    // handling Tron connectors
+    else if (connector.type === PROVIDERS.TRON) {
+      activateTron(connector, true).catch((error) => {
+        console.error('(ConnectorType: Tron) Error:', error);
+        setPendingError(true);
+      });
+    }
   };
 
-  // close wallet modal if fortmatic modal is active
   /*
+  // close wallet modal if fortmatic modal is active
   useEffect(() => {
     fortmatic.on(OVERLAY_READY, () => {
       toggleWalletModal();
@@ -202,7 +241,13 @@ const WalletManager = () => {
           <ModalHeader>{error instanceof UnsupportedChainIdError || networkMissmatch ? 'Wrong Network' : 'Error connecting'}</ModalHeader>
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError || networkMissmatch ? (
-              <h5>Please connect to the appropriate network.</h5>
+              <>
+                <Alert status="warning" variant="subtle" flexDirection="column" alignItems="center" justifyContent="center" textAlign="center" height="200px" rounded="md">
+                  <AlertIcon boxSize="40px" mr={0} />
+                  <AlertTitle mt={4} mb={1} fontSize="md">Your wallet {formatConnectorName(connector)} is connected on the wrong network, please connect it to the appropriate network.</AlertTitle>
+                  <AlertDescription maxWidth="sm" fontSize="xs">You can only connect one wallet at a time.</AlertDescription>
+                </Alert>
+              </>
             ) : (
               'Error connecting. Try refreshing the page.'
             )}
@@ -241,7 +286,7 @@ const WalletManager = () => {
   }
 
   return (
-    <Modal isOpen={walletModalOpen} onClose={toggleWalletModal}>
+    <Modal isOpen={walletModalOpen} size={networkMissmatch ? 'xl' : 'md'} onClose={toggleWalletModal}>
       <ModalOverlay />
       <ModalContent>{getModalContent()}</ModalContent>
     </Modal>

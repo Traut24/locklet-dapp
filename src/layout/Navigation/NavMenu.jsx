@@ -9,7 +9,7 @@ const MobileNavMenu = (props) => {
   return (
     <Flex hidden={!isOpen} as="nav" direction="column" bg="blue.600" position="fixed" height="calc(100vh - 4rem)" top="16" insetX="0" zIndex={10} w="full">
       <Box px="4">
-        <NavItem.Mobile active={pathname == '/eth' || pathname == '/bsc'} label="Home" to={`/${appNetwork}`} />
+        <NavItem.Mobile active={pathname == '/eth' || pathname == '/bsc' || pathname == '/trx'} label="Home" to={`/${appNetwork}`} />
         <NavItem.Mobile active={pathname.includes('/locks')} label="Locks" to={`/${appNetwork}/locks`} />
         <NavItem.Mobile label="Docs" to="https://docs.locklet.finance" isExternal />
         <NavItem.Mobile label="About" to="https://www.locklet.finance" isExternal />
@@ -34,7 +34,7 @@ const DesktopNavMenu = (props) => {
         lg: 'flex',
       }}
     >
-      <NavItem.Desktop active={pathname == '/eth' || pathname == '/bsc'} label="Home" to={`/${appNetwork}`} />
+      <NavItem.Desktop active={pathname == '/eth' || pathname == '/bsc' || pathname == '/trx' || pathname == '/bttc' } label="Home" to={`/${appNetwork}`} />
       <NavItem.Desktop active={pathname.includes('/locks')} label="Locks" to={`/${appNetwork}/locks`} />
       <NavItem.Desktop label="Docs" to="https://docs.locklet.finance" isExternal />
       <NavItem.Desktop label="About" to="https://www.locklet.finance" isExternal />

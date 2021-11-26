@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { useActiveWeb3React } from 'src/hooks';
 import { usePendingTransactions } from 'src/hooks/transactions';
 import { useBlockNumber } from 'src/hooks/useBlockNumber';
+import { useActiveUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
 import { CHECKED_TRANSACTION, FINALIZE_TRANSACTION } from 'src/store';
 
 export function shouldCheck(lastBlockNumber, tx) {
@@ -25,57 +25,33 @@ export function shouldCheck(lastBlockNumber, tx) {
 }
 
 export default function TransactionSync() {
-  const { chainId, library } = useActiveWeb3React();
+  const { chainId, library } = useActiveUnifiedWeb3();
 
   const lastBlockNumber = useBlockNumber();
 
   const dispatch = useDispatch();
   const state = useSelector((state) => state.transactions);
 
-  const transactions = chainId && state ? state[chainId] ?? {} : {};
-
+  const transactions = useMemo(() => {
+    return state && chainId ? state[chainId] ?? {} : {};
+  }, [chainId, state]);
+  
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return;
 
     Object.keys(transactions)
       .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash]))
       .forEach((hash) => {
-        library
-          .getTransactionReceipt(hash)
-          .then((receipt) => {
-            if (receipt) {
-              dispatch({
-                type: FINALIZE_TRANSACTION,
-                chainId,
-                hash,
-                receipt: {
-                  blockHash: receipt.blockHash,
-                  blockNumber: receipt.blockNumber,
-                  contractAddress: receipt.contractAddress,
-                  from: receipt.from,
-                  status: receipt.status,
-                  to: receipt.to,
-                  transactionHash: receipt.transactionHash,
-                  transactionIndex: receipt.transactionIndex,
-                },
-              });
-
-              const tx = transactions[hash];
-              if (tx?.status === 1 || tx?.status === undefined) toast.success('Your transaction was successful', { id: hash });
-              else toast.error('An error occurred during your transaction', { id: hash });
-            } else {
-              dispatch({ type: CHECKED_TRANSACTION, chainId, hash, blockNumber: lastBlockNumber });
-            }
-          })
-          .catch((error) => {
-            console.error(`failed to check transaction hash: ${hash}`, error);
-          });
+        if (hash.startsWith('0x')) checkEthereum(hash, library, chainId, lastBlockNumber, transactions, dispatch);
+        else checkTron(hash, library, chainId, lastBlockNumber, transactions, dispatch);
       });
   }, [chainId, library, transactions, lastBlockNumber, dispatch]);
 
   const pendingTransactions = usePendingTransactions();
 
   useEffect(() => {
+    if (!pendingTransactions) return;
+
     const pendingTransactionsKeys = Object.keys(pendingTransactions);
     pendingTransactionsKeys.forEach((pendingTxHash) => {
       const pendingTx = pendingTransactions[pendingTxHash];
@@ -86,4 +62,67 @@ export default function TransactionSync() {
   }, [chainId]);
 
   return null;
+}
+
+function checkEthereum(hash, library, chainId, lastBlockNumber, transactions, dispatch) {
+  library
+    .getTransactionReceipt(hash)
+    .then((receipt) => {
+      if (receipt) {
+        dispatch({
+          type: FINALIZE_TRANSACTION,
+          chainId,
+          hash,
+          receipt: {
+            blockHash: receipt.blockHash,
+            blockNumber: receipt.blockNumber,
+            contractAddress: receipt.contractAddress,
+            from: receipt.from,
+            status: receipt.status,
+            to: receipt.to,
+            transactionHash: receipt.transactionHash,
+            transactionIndex: receipt.transactionIndex,
+          },
+        });
+
+        const tx = transactions[hash];
+        if (tx?.status === 1 || tx?.status === undefined) toast.success('Your transaction was successful', { id: hash });
+        else toast.error('An error occurred during your transaction', { id: hash });
+      } else {
+        dispatch({ type: CHECKED_TRANSACTION, chainId, hash, blockNumber: lastBlockNumber });
+      }
+    })
+    .catch((error) => {
+      console.error(`failed to check transaction hash: ${hash}`, error);
+    });
+}
+
+function checkTron(hash, library, chainId, lastBlockNumber, transactions, dispatch) {
+  library
+    .trx
+    .getTransactionInfo(hash)
+    .then((txInfo) => {
+      if (Object.keys(txInfo).length > 0) {
+        dispatch({
+          type: FINALIZE_TRANSACTION,
+          chainId,
+          hash,
+          receipt: {
+            blockNumber: txInfo.blockNumber,
+            contractAddress: txInfo.contract_address,
+            status: txInfo.receipt.result,
+            transactionHash: txInfo.id
+          },
+        });
+
+        const tx = transactions[hash];
+        if (tx?.receipt?.status === "SUCCESS") toast.success('Your transaction was successful', { id: hash });
+        else toast.error('An error occurred during your transaction', { id: hash });
+      } else {
+        dispatch({ type: CHECKED_TRANSACTION, chainId, hash, blockNumber: lastBlockNumber });
+      }
+    })
+    .catch((error) => {
+      console.error(`failed to check transaction hash: ${hash}`, error);
+    });
 }

@@ -1,5 +1,6 @@
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
+import { BttcChainId, TrxChainId } from 'src/constants';
 
 import { ADD_TRANSACTION, CHECKED_TRANSACTION, FINALIZE_TRANSACTION } from '../mutations';
 
@@ -10,6 +11,10 @@ const initialState = {
   [EthChainId.ROPSTEN]: {},
   [BscChainId.MAINNET]: {},
   [BscChainId.TESTNET]: {},
+  [TrxChainId.MAINNET]: {},
+  [TrxChainId.NILE]: {},
+  [BttcChainId.MAINNET]: {},
+  [BttcChainId.TESTNET]: {}
 };
 
 export default (state = initialState, action) => {

@@ -15,17 +15,22 @@ import { Link as RouterLink } from 'react-router-dom';
 import DatePicker from 'src/components/DatePicker';
 import AdvancedNumberInputField from 'src/components/Inputs/AdvancedNumberInputField';
 import RecipientInput from 'src/components/Inputs/RecipientInput';
-import { LKT_TOKEN, TOKEN_VAULT } from 'src/constants';
+import { LKT_TOKEN, LKT_TOKEN_TRON, TOKEN_VAULT, TOKEN_VAULT_TRON } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useTransactionAdder } from 'src/hooks/transactions';
 import { useTokenContract, useTokenVaultContract } from 'src/hooks/useContract';
 import { useToggleModal } from 'src/hooks/useToggleModal';
 import useTokensMetadata from 'src/hooks/useTokensMetadata';
+import { useActiveUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
+import { useActiveUnifiedWeb3Discriminator } from 'src/hooks/useWeb3Discriminator';
 import { daysBetween, getContract, getExplorerLink, isAddress } from 'src/utils';
+
+import { approveTron, refreshLktAllowanceTron, refreshTokenAllowanceTron, refreshTokenBalanceTron, refreshTokenDataTron, refreshTokenVaultFeesTron } from './tron';
 
 export default function NewTokenLock() {
   // app state
-  const { chainId, account, library } = useActiveWeb3React();
+  const { chainId, account, library } = useActiveUnifiedWeb3();
+  const { isEvm, isTron } = useActiveUnifiedWeb3Discriminator();
 
   const appNetwork = useSelector((state) => state.app.network);
 
@@ -129,8 +134,9 @@ export default function NewTokenLock() {
   }, [recipients, totalLockAmountAsBN]);
 
   const hasRecipientsWithInvalidAddrs = useMemo(() => {
-    return recipients.some((x) => !isAddress(x.addr));
-  }, [recipients]);
+    if (isEvm) return recipients.some((x) => !isAddress(x.addr));
+    else if (isTron) return recipients.some((x) => x.addr.length != 34);
+  }, [isEvm, isTron, recipients]);
 
   const isEndDateSameAsStartDate = useMemo(() => {
     return lStartDate.getFullYear() == lEndDate.getFullYear() && lStartDate.getMonth() == lEndDate.getMonth() && lStartDate.getDate() == lEndDate.getDate();
@@ -186,8 +192,26 @@ export default function NewTokenLock() {
   const tokenVaultAddr = TOKEN_VAULT[chainId];
   const tokenVault = useTokenVaultContract(tokenVaultAddr);
 
+  const [tokenVaultTron, setTokenVaultTron] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const _tokenVaultTron = await library.contract().at(TOKEN_VAULT_TRON[chainId]);
+      setTokenVaultTron(_tokenVaultTron);
+    })();
+  }, [chainId, library]);
+
+  // LKT token management
   const lktTokenAddr = LKT_TOKEN[chainId];
   const lktToken = useTokenContract(lktTokenAddr);
+
+  const [lktTokenTron, setLktTokenTron] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const _lktTokenTron = await library.contract().at(LKT_TOKEN_TRON[chainId]);
+      console.log('_lktTokenTron', _lktTokenTron)
+      setLktTokenTron(_lktTokenTron);
+    })();
+  }, [chainId, library]);
 
   const refreshTokenVaultFees = async () => {
     const creationFlatFeeLktAmountAsBN = await tokenVault.getCreationFlatFeeLktAmount();
@@ -204,9 +228,14 @@ export default function NewTokenLock() {
   };
 
   useEffect(() => {
-    refreshTokenVaultFees();
-    if (account) refreshLktAllowance();
-  }, [chainId, account]);
+    if (isEvm) refreshTokenVaultFees();
+    else if (isTron && tokenVaultTron) refreshTokenVaultFeesTron(tokenVaultTron, setFlatFeeLktAmount, setPercentFeeAsBN);
+
+    if (account) {
+      if (isEvm) refreshLktAllowance();
+      else if (isTron && lktTokenTron && tokenVaultTron) refreshLktAllowanceTron(account, lktTokenTron, tokenVaultTron, setLktAllowanceAsBN);
+    }
+  }, [chainId, tokenVaultTron, account, lktTokenTron]);
 
   const toggleWalletModal = useToggleModal('walletManager');
 
@@ -223,12 +252,19 @@ export default function NewTokenLock() {
     setSelectedTokenAllowanceAsBN(BigNumber.from(0));
     setTokenBalanceAsBN(BigNumber.from(0));
 
-    if (tokenAddr?.length == 42) {
+    if ((isEvm && tokenAddr?.length == 42) || (isTron && tokenAddr?.length == 34)) {
       setIsTokenSelected(true);
 
       try {
-        const _token = getContract(tokenAddr, ERC20.abi, library, account ? account : undefined);
-        setToken(_token);
+        if (isEvm) {
+          const _token = getContract(tokenAddr, ERC20.abi, library, account ? account : undefined);
+          setToken(_token);
+        } else if (isTron) {
+          (async () => {
+            const _token = await library.contract().at(tokenAddr);
+            setToken(_token);
+          })();
+        }
       } catch (err) {
         console.error(err);
         setIsTokenErrored(true);
@@ -265,11 +301,17 @@ export default function NewTokenLock() {
 
     (async () => {
       try {
-        await refreshTokenData();
+        if (isEvm) await refreshTokenData();
+        else if (isTron) await refreshTokenDataTron(token, setSelectedTokenData);
 
         if (account) {
-          refreshTokenBalance();
-          refreshTokenAllowance();
+          if (isEvm) {
+            refreshTokenBalance();
+            refreshTokenAllowance();
+          } else if (isTron) {
+            refreshTokenBalanceTron(account, token, setTokenBalanceAsBN);
+            refreshTokenAllowanceTron(account, token, tokenVaultTron, setSelectedTokenAllowanceAsBN);
+          }
         }
       } catch (err) {
         setIsTokenErrored(true);
@@ -278,9 +320,11 @@ export default function NewTokenLock() {
     })();
   }, [token, account]);
 
+  /*
   useEffect(() => {
     if (account && selectedTokenData) refreshTokenBalance(selectedTokenData.decimals);
   }, [account]);
+  */
 
   // approve logic
   const approve = async () => {
@@ -626,8 +670,26 @@ export default function NewTokenLock() {
                                 size="lg"
                                 flex="1"
                                 mr="1"
-                                onClick={approve}
-                                isDisabled={!isValidLock || (!needToApproveLkt && !needToApproveToken)}
+                                onClick={() => {
+                                  if (isEvm) {
+                                    approve();
+                                  } else if (isTron) {
+                                    approveTron(
+                                      library,
+                                      account,
+                                      needToApproveLkt,
+                                      needToApproveToken,
+                                      selectedTokenData,
+                                      lktTokenTron,
+                                      tokenVaultTron,
+                                      addTx,
+                                      setIsAllowanceLoading,
+                                      setLktAllowanceAsBN,
+                                      setSelectedTokenAllowanceAsBN
+                                    );
+                                  }
+                                }}
+                                // isDisabled={!isValidLock || (!needToApproveLkt && !needToApproveToken)}
                                 isLoading={isAllowanceLoading}
                                 loadingText="Approving"
                               >

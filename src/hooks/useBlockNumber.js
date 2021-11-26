@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { useActiveWeb3React } from '.';
+import { useActiveUnifiedWeb3 } from './useUnifiedWeb3';
 
 export function useBlockNumber() {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = useActiveUnifiedWeb3();
 
   return useSelector((state) => state.app?.blockNumber[chainId ?? -1]);
 }

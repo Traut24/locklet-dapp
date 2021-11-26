@@ -5,6 +5,9 @@ export const theme = extendTheme({
     initialColorMode: 'light',
     useSystemColorMode: false,
   },
+  fonts: {
+    body: 'GeneralSans',
+  },
   colors: {
     brand: {
       100: '#cef6e8',

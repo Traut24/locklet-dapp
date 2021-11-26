@@ -2,11 +2,11 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_TRANSACTION } from 'src/store';
 
-import { useActiveWeb3React } from '.';
+import { useActiveUnifiedWeb3 } from './useUnifiedWeb3';
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder() {
-  const { chainId, account } = useActiveWeb3React();
+  const { chainId, account } = useActiveUnifiedWeb3();
   const dispatch = useDispatch();
 
   return useCallback(
@@ -26,10 +26,13 @@ export function useTransactionAdder() {
 
 // returns all the pending transactions for the current chain
 export function usePendingTransactions() {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = useActiveUnifiedWeb3();
   const transactions = useSelector((state) => state.transactions);
 
-  return useMemo(() => Object.fromEntries(Object.entries(transactions[chainId]).filter(([hash, tx]) => tx && !tx.receipt)), [transactions, chainId]);
+  return useMemo(() => {
+    if (!transactions[chainId]) return null;
+    return Object.fromEntries(Object.entries(transactions[chainId]).filter(([hash, tx]) => tx && !tx.receipt));
+  }, [transactions, chainId]);
 }
 
 /**

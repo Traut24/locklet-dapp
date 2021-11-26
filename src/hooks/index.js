@@ -1,41 +1,65 @@
-import { useWeb3React as useWeb3ReactCore } from '@web3-react/core';
+import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import { injected } from 'src/connectors';
+import { useSelector } from 'react-redux';
+import { injected, tronLink } from 'src/connectors';
 import { NetworkContextName } from 'src/constants';
 
+import { useTronWeb } from './useTronWeb';
+
 export function useActiveWeb3React() {
-  const context = useWeb3ReactCore();
-  const contextNetwork = useWeb3ReactCore(NetworkContextName);
+  const context = useWeb3React();
+  const contextNetwork = useWeb3React(NetworkContextName);
+  // console.log('context', context.active, context)
+  // console.log('contextNetwork', contextNetwork)
   return context.active ? context : contextNetwork;
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore(); // specifically using useWeb3ReactCore because of what this hook does
+  // app state
+  const appNetwork = useSelector((state) => state.app.network);
+
+  const { active: web3Active, activate: activateWeb3 } = useWeb3React();
+  const { active: tronActive, activate: activateTron } = useTronWeb();
+
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
+    if (appNetwork == 'eth' || appNetwork == 'bsc' || appNetwork == 'bttc') {
+      injected.isAuthorized().then((isAuthorized) => {
+        if (isAuthorized) {
+          activateWeb3(injected, undefined, true).catch(() => {
+            setTried(true);
+          });
+        } else if (isMobile && window.ethereum) {
+          activateWeb3(injected, undefined, true).catch(() => {
+            setTried(true);
+          });
+        } else {
           setTried(true);
+        }
+      });
+    } else if (appNetwork == 'trx') {
+      setTimeout(() => {
+        tronLink.isAuthorized().then((isAuthorized) => {
+          if (isAuthorized) {
+            activateTron(tronLink, true).catch(() => {
+              setTried(true);
+            });
+          } else {
+            setTried(true);
+          }
         });
-      } else if (isMobile && window.ethereum) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true);
-        });
-      } else {
-        setTried(true);
-      }
-    });
-  }, [activate]); // intentionally only running on mount (make sure it's only mounted once :))
+      }, 600);
+    }
+  }, [activateWeb3, activateTron]); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
-    if (active) {
+    if (web3Active || tronActive) {
       setTried(true);
     }
-  }, [active]);
+  }, [web3Active, tronActive]);
 
   return tried;
 }
@@ -45,7 +69,7 @@ export function useEagerConnect() {
  * and out after checking what network theyre on
  */
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3ReactCore(); // specifically using useWeb3React because of what this hook does
+  const { active, error, activate } = useWeb3React(); // specifically using useWeb3React because of what this hook does
 
   useEffect(() => {
     const { ethereum } = window;

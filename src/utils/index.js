@@ -5,6 +5,7 @@ import { Contract } from '@ethersproject/contracts';
 import { ChainId as BscChainId } from '@pancakeswap/sdk';
 import { ChainId as EthChainId } from '@uniswap/sdk';
 import { JSBI, Percent } from '@uniswap/sdk';
+import { TrxChainId } from 'src/constants';
 
 export function isAddress(value) {
   try {
@@ -15,54 +16,89 @@ export function isAddress(value) {
 }
 
 const ETHERSCAN_PREFIXES = {
-  1: '',
-  3: 'ropsten.',
-  4: 'rinkeby.',
-  5: 'goerli.',
-  42: 'kovan.',
+  [EthChainId.MAINNET]: '',
+  [EthChainId.ROPSTEN]: 'ropsten.',
+  [EthChainId.RINKEBY]: 'rinkeby.',
+  [EthChainId.GÖRLI]: 'goerli.',
+  [EthChainId.KOVAN]: 'kovan.',
 };
 
 const BSCSCAN_PREFIXES = {
-  56: '',
-  97: 'testnet.',
+  [BscChainId.MAINNET]: '',
+  [BscChainId.TESTNET]: 'testnet.',
 };
+
+const TRONSCAN_PREFIXES = {
+  [TrxChainId.MAINNET]: '',
+  [TrxChainId.NILE]: 'nile.'
+}
 
 export function getExplorerLink(chainId, data, type) {
   let prefix = null;
 
   const ethNetworks = [EthChainId.MAINNET, EthChainId.ROPSTEN];
   const bscNetworks = [BscChainId.MAINNET, BscChainId.TESTNET];
+  const trxNetworks = [TrxChainId.MAINNET, TrxChainId.NILE];
 
-  if (ethNetworks.includes(chainId)) {
-    prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`;
-  } else if (bscNetworks.includes(chainId)) {
-    prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[56]}bscscan.com`;
-  }
+  const isEthNetwork = ethNetworks.includes(chainId);
+  const isBscNetwork = bscNetworks.includes(chainId);
+  const isTrxNetwork = trxNetworks.includes(chainId);
 
-  switch (type) {
-    case 'transaction': {
-      return `${prefix}/tx/${data}`;
+  if (isEthNetwork || isBscNetwork) {
+    if (isEthNetwork) {
+      prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[EthChainId.MAINNET]}etherscan.io`;
+    } else if (isBscNetwork) {
+      prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[BscChainId.MAINNET]}bscscan.com`;
     }
-    case 'token': {
-      return `${prefix}/token/${data}`;
+
+    switch (type) {
+      case 'transaction': {
+        return `${prefix}/tx/${data}`;
+      }
+      case 'token': {
+        return `${prefix}/token/${data}`;
+      }
+      case 'block': {
+        return `${prefix}/block/${data}`;
+      }
+      case 'address':
+      default: {
+        return `${prefix}/address/${data}`;
+      }
     }
-    case 'block': {
-      return `${prefix}/block/${data}`;
-    }
-    case 'address':
-    default: {
-      return `${prefix}/address/${data}`;
+  } else if (isTrxNetwork) {
+    prefix = `https://${TRONSCAN_PREFIXES[chainId] || TRONSCAN_PREFIXES[TrxChainId.MAINNET]}tronscan.org`;
+
+    switch (type) {
+      case 'transaction': {
+        return `${prefix}/#/transaction/${data}`;
+      }
+      case 'token': {
+        return `${prefix}/#/token20/${data}`;
+      }
+      case 'block': {
+        return `${prefix}/#/block/${data}`;
+      }
+      case 'address':
+      default: {
+        return `${prefix}/#/address/${data}`;
+      }
     }
   }
 }
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address, chars = 4) {
-  const parsed = isAddress(address);
-  if (!parsed) {
-    throw Error(`Invalid 'address' parameter '${address}'.`);
+  if (address.startsWith('0x')) {
+    const parsed = isAddress(address);
+    if (!parsed) {
+      throw Error(`Invalid 'address' parameter '${address}'.`);
+    }
+    return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
   }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
+  else if (address.startsWith('T')) {
+    return `${address.substring(0, chars + 2)}...${address.substring(34 - chars)}`;
+  }
 }
 
 export function shortenTxHash(hash, chars = 4) {
@@ -136,4 +172,8 @@ export function formatUsd(usd) {
     style: 'decimal',
     currency: 'USD',
   }).format(usd);
+}
+
+export function timeout(delay) {
+  return new Promise(res => setTimeout(res, delay) );
 }

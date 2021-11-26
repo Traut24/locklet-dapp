@@ -1,12 +1,17 @@
+import { useInterval } from '@chakra-ui/hooks';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useActiveWeb3React } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
+import { useActiveUnifiedWeb3 } from 'src/hooks/useUnifiedWeb3';
+import { useActiveUnifiedWeb3Discriminator } from 'src/hooks/useWeb3Discriminator';
 import { SET_BLOCK_NUMBER } from 'src/store';
 
 export default function BlockSync() {
-  const { library, chainId } = useActiveWeb3React();
+  const { library, chainId } = useActiveUnifiedWeb3();
+  const { isEvm, isTron } = useActiveUnifiedWeb3Discriminator();
+
   const dispatch = useDispatch();
 
   const windowVisible = useIsWindowVisible();
@@ -29,9 +34,9 @@ export default function BlockSync() {
     [chainId, setState]
   );
 
-  // attach/detach listeners
+  // evm logic, attach/detach listeners
   useEffect(() => {
-    if (!library || !chainId || !windowVisible) return undefined;
+    if (!isEvm || !library || !chainId || !windowVisible) return undefined;
 
     setState({ chainId, blockNumber: null });
 
@@ -44,7 +49,30 @@ export default function BlockSync() {
     return () => {
       library.removeListener('block', blockNumberCallback);
     };
-  }, [dispatch, chainId, library, blockNumberCallback, windowVisible]);
+  }, [dispatch, isEvm, chainId, library, blockNumberCallback, windowVisible]);
+
+  // tron logic, pool blocks
+  useEffect(() => {
+    if (!isTron || !library || !chainId || !windowVisible) return undefined;
+
+    setState({ chainId, blockNumber: null });
+
+    const refreshBlockNumber = () => {
+      library
+        .trx
+        .getCurrentBlock()
+        .then((res) => blockNumberCallback(res?.block_header?.raw_data?.number ?? -1))
+        .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
+    };
+
+    refreshBlockNumber();
+
+    setInterval(refreshBlockNumber, 6000);
+    return () => {
+      clearInterval(refreshBlockNumber);
+    }
+
+  }, [dispatch, isTron, chainId, library, blockNumberCallback, windowVisible]);
 
   const debouncedState = useDebounce(state, 100);
 

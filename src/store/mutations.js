@@ -9,3 +9,10 @@ export const CHECKED_TRANSACTION = 'checkedTransaction';
 export const FINALIZE_TRANSACTION = 'finalizeTransaction';
 
 export const APPEND_METADATA = 'appendMetadata';
+
+export const ACTIVATE_PROVIDER = 'activateProvider';
+export const UPDATE_PROVIDER = 'updateProvider';
+export const UPDATE_PROVIDER_FROM_ERROR = 'updateProviderFromError';
+export const PROVIDER_ERRORED = 'providerErrored';
+export const PROVIDER_ERRORED_FROM_ACTIVATION = 'providerErroredFromActivation';
+export const DEACTIVATE_PROVIDER = 'deactivateProvider';

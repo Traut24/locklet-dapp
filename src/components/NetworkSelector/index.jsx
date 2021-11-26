@@ -2,7 +2,9 @@ import { Button, HStack, Image } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BscLogo from 'src/assets/images/networks/bsc.png';
+import BttLogo from 'src/assets/images/networks/btt.png';
 import EthLogo from 'src/assets/images/networks/eth.png';
+import TrxLogo from 'src/assets/images/networks/trx.png';
 import { SET_NETWORK } from 'src/store';
 import styled from 'styled-components';
 
@@ -55,6 +57,18 @@ const options = [
     icon: BscLogo,
     bgColor: 'orange.100',
   },
+  {
+    value: NETWORK_VALUES[2],
+    label: 'Tron',
+    icon: TrxLogo,
+    bgColor: 'red.100',
+  },
+  {
+    value: NETWORK_VALUES[3],
+    label: 'BitTorrent',
+    icon: BttLogo,
+    bgColor: 'gray.300',
+  }
 ];
 
 export default function NetworkSelector() {
